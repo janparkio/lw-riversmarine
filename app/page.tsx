@@ -19,6 +19,7 @@ export default function Home() {
     <Section>
       <Container>
         <Hero />
+        <About />
         <Feature />
       </Container>
     </Section>
@@ -30,7 +31,7 @@ const Hero = () => {
     <main>
       <section>
         <div className="mx-auto">
-          <div className="mx-auto lg:mx-0">
+          <div className="mx-auto lg:mx-0 text-pretty">
             <h2 className="mt-2 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
               Towboat & Barge Brokerage You Can Rely On
             </h2>
@@ -52,7 +53,7 @@ const features = [
   },
   {
     heading: 'Specialized',
-    lines: ['in the US', 'and South America'],
+    lines: ['in the US and South America'],
   },
   {
     heading: 'Supporting',
@@ -64,36 +65,36 @@ const Feature = () => {
   return (
     <div className="py-12 md:py-24">
       <div className="mx-auto">
-        <div className="relative mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-center">
-          <div className="lg:pr-8 lg:pt-4">
+        <div className="relative mx-auto grid grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:items-center">
+          <div className="lg:pr-8 lg:pt-4 sm:col-span-4 lg:col-span-3">
             <div className="lg:max-w-2xl">
-              <p className="mt-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
+              <p className="mt-2 text-pretty font-semibold tracking-tight text-xl sm:text-2xl">
                 Pushing Forward
               </p>
-              <p className="mt-6 text-lg/8 text-gray-700 dark:text-gray-300">
+              <p className="mt-2 text-lg/8 text-muted-foreground">
                 We have supported the economy since 2000
               </p>
-              <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6">
                 {features.map((feature, index) => (
                   <div
                     key={index}
-                    className="relative rounded-2xl bg-white p-8 shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/10"
+                    className="relative p-8 sm:p-6 lg:p-10 shadow-sm ring-1 ring-muted-foreground/10 bg-card/50"
                   >
                     {feature.variant === 'stat' ? (
                       <div>
-                        <div className="text-5xl font-semibold leading-none text-[#b68a40]">
+                        <div className="text-4xl text-pretty sm:text-5xl font-semibold leading-none text-secondary">
                           {feature.stat}
                         </div>
-                        <p className="mt-3 text-base text-gray-700 dark:text-gray-300">
+                        <p className="mt-3 text-base text-base">
                           {feature.label}
                         </p>
                       </div>
                     ) : (
                       <div>
-                        <p className="text-xl font-semibold text-[#b68a40]">
+                        <p className="text-2xl text-pretty sm:text-xl font-semibold text-secondary">
                           {feature.heading}
                         </p>
-                        <div className="mt-3 space-y-1 text-gray-900 dark:text-gray-100">
+                        <div className="mt-3 space-y-1 text-base">
                           {feature.lines?.map((line: string, i: number) => (
                             <p key={i} className="text-base">
                               {line}
@@ -107,18 +108,41 @@ const Feature = () => {
               </div>
             </div>
           </div>
-          <div className="relative lg:mt-0">
+          <div className="relative lg:mt-0 md:col-span-1 lg:col-span-2 lg:-ml-16">
             <img
               alt="Towboat silhouette"
-              src="/img/riversmarine-towboats-and-barges-02.png"
+              src="/img/riversmarine-towboats-and-barges-05.png"
               width={2432}
               height={1442}
-              className="w-[44rem] max-w-none sm:w-[40rem] lg:w-[48rem] lg:-ml-16 xl:-ml-24 dark:invert relative z-10"
+              className="w-[44rem] max-w-none lg:w-[56rem] lg:-ml-16 xl:-ml-24 dark:invert relative z-10"
             />
           </div>
         </div>
       </div>
     </div >
+  );
+};
+
+const About = () => {
+  return (
+    <section className="py-8 md:py-12">
+      <div className="mx-auto">
+        <div className="flex items-start gap-6">
+          <img
+            src="/img/riversmarine-towboats-and-barges-02.png"
+            alt="Sean P Smith near a towboat"
+            width={96}
+            height={96}
+            className="h-24 w-24 rounded object-cover shadow-sm ring-1 ring-muted-foreground/10"
+          />
+          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl">
+            With over 25 years working with US and South American waterways,
+            <span className="ml-1 font-semibold italic text-foreground">Sean P Smith</span>
+            {" "}provides dependable brokerage services for towboats and barges.
+          </p>
+        </div>
+      </div>
+    </section>
   );
 };
 
