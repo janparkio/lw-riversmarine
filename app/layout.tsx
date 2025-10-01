@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { MobileNav } from "@/components/nav/mobile-nav";
 import { Button } from "@/components/ui/button";
 import { Analytics } from "@vercel/analytics/next"
+import { DynamicBody } from "@/components/dynamic-body";
 
 import { mainMenu, contentMenu } from "@/menu.config";
 import { siteConfig } from "@/site.config";
@@ -16,7 +17,6 @@ import Balancer from "react-wrap-balancer";
 import Logo from "@/public/logo.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { headers } from "next/headers";
 
 import type { Metadata } from "next";
 
@@ -35,19 +35,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = await headers();
-  const pathname = headersList.get("x-pathname") || "/";
-  const isHomePage = pathname === "/";
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={cn("min-h-screen font-sans antialiased overflow-x-hidden", font.variable, isHomePage && "bg-homepage")}>
+      <body className={cn("min-h-screen font-sans antialiased overflow-x-hidden", font.variable)}>
+        <DynamicBody />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

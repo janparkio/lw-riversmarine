@@ -39,10 +39,10 @@ const Hero = () => {
             <Reveal as="span" className="inline-flex items-center rounded-full bg-accent/50 text-accent-foreground px-2 py-0.5 text-base font-medium ring-1 ring-accent-foreground/10">
               Coming soon
             </Reveal>
-            <Reveal as="h2" delay={100} className="mt-4 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            <Reveal as="h2" delay={300} className="mt-4 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
               Towboat & Barge Brokerage You Can Rely On
             </Reveal>
-            <Reveal as="p" delay={200} className="mt-4 text-xl font-medium text-pretty text-muted-foreground sm:text-3xl">
+            <Reveal as="p" delay={500} className="mt-4 text-xl font-medium text-pretty text-muted-foreground sm:text-3xl">
               Uniting waterways in the US and South America
             </Reveal>
           </div>
@@ -121,10 +121,10 @@ const Feature = () => {
             <Reveal as="img"
               delay={250}
               alt="Towboat silhouette"
-              src="/img/riversmarine-towboats-and-barges-05.png"
+              src="/img/riversmarine-Hopper_Barge_Tug_02-opt.png"
               width={2432}
               height={1442}
-              className="w-[44rem] max-w-none lg:w-[56rem] lg:-ml-16 xl:-ml-24 dark:invert relative z-10"
+              className="w-[44rem] max-w-none lg:w-[64rem] xl:-ml-12 dark:invert relative z-10"
             />
           </div>
         </div>

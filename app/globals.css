@@ -225,4 +225,21 @@
     background: linear-gradient(180deg, rgba(34, 31, 22, 1) 0%, rgba(18, 18, 18, 1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#221F16", endColorstr="#121212", GradientType=0);
   }
+
+  .bg-site {
+    background: #F1F3F2;
+    background: -webkit-linear-gradient(180deg, rgba(241, 243, 242, 1) 0%, rgba(248, 248, 248, 1) 100%);
+    background: -moz-linear-gradient(180deg, rgba(241, 243, 242, 1) 0%, rgba(248, 248, 248, 1) 100%);
+    background: linear-gradient(180deg, rgba(241, 243, 242, 1) 0%, rgba(248, 248, 248, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#F1F3F2", endColorstr="#F8F8F8", GradientType=0);
+  }
+
+  .dark .bg-site {
+    background: #141414;
+    background: -webkit-linear-gradient(180deg, rgba(20, 20, 20, 1) 0%, rgba(15, 15, 15, 1) 100%);
+    background: -moz-linear-gradient(180deg, rgba(20, 20, 20, 1) 0%, rgba(15, 15, 15, 1) 100%);
+    background: linear-gradient(180deg, rgba(20, 20, 20, 1) 0%, rgba(15, 15, 15, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#141414", endColorstr="#0F0F0F", GradientType=0);
+  }
+
 }

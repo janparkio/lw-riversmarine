@@ -2,9 +2,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-pathname', request.nextUrl.pathname);
-
   // Block access to /pages and /posts during development
   if (process.env.NODE_ENV === 'development') {
     const pathname = request.nextUrl.pathname;
@@ -14,11 +11,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
+  return NextResponse.next();
 }
 
 export const config = {
