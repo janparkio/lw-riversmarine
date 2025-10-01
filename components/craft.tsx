@@ -70,8 +70,8 @@ export type GapValue = keyof typeof GAP_VALUES;
 export type ResponsiveValue<T> =
   | T
   | {
-      [K in Breakpoint]?: T;
-    };
+    [K in Breakpoint]?: T;
+  };
 
 // Box-specific props with improved type safety
 export interface BoxProps extends BaseProps {
@@ -180,7 +180,7 @@ const styles = {
   layout: {
     spacing: "[&>*+*]:mt-6",
     article: "max-w-prose",
-    container: "max-w-5xl mx-auto p-6 sm:p-8",
+    container: "max-w-7xl mx-auto p-6 sm:p-8",
     section: "py-8 md:py-12",
   },
 };

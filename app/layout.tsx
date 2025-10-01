@@ -1,7 +1,7 @@
 import "./globals.css";
 
 import { Section, Container } from "@/components/craft";
-import { Inter as FontSans } from "next/font/google";
+import { Rubik as FontSans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { MobileNav } from "@/components/nav/mobile-nav";
@@ -16,6 +16,7 @@ import Balancer from "react-wrap-balancer";
 import Logo from "@/public/logo.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { headers } from "next/headers";
 
 import type { Metadata } from "next";
 
@@ -25,24 +26,28 @@ const font = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "WordPress & Next.js Starter by 9d8",
+  title: "Rivers Marine",
   description:
-    "A starter template for Next.js with WordPress as a headless CMS.",
+    "Rivers Marine",
   metadataBase: new URL(siteConfig.site_domain),
   alternates: {
     canonical: "/",
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "/";
+  const isHomePage = pathname === "/";
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={cn("min-h-screen font-sans antialiased", font.variable)}>
+      <body className={cn("min-h-screen font-sans antialiased overflow-x-hidden", font.variable, isHomePage && "bg-homepage")}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -62,12 +67,12 @@ export default function RootLayout({
 const Nav = ({ className, children, id }: NavProps) => {
   return (
     <nav
-      className={cn("sticky z-50 top-0 bg-background", "border-b", className)}
+      className={cn("sticky z-50 top-0", "border-b", className)}
       id={id}
     >
       <div
         id="nav-container"
-        className="max-w-5xl mx-auto py-4 px-6 sm:px-8 flex justify-between items-center"
+        className="max-w-7xl mx-auto py-4 px-6 sm:px-8 flex justify-between items-center"
       >
         <Link
           className="hover:opacity-75 transition-all flex gap-4 items-center"
@@ -95,7 +100,7 @@ const Nav = ({ className, children, id }: NavProps) => {
             ))}
           </div>
           <Button asChild className="hidden sm:flex">
-            <Link href="https://github.com/9d8dev/next-wp">Get Started</Link>
+            <Link href="https://riversmarine.net">Get Started</Link>
           </Button>
           <MobileNav />
         </div>
@@ -149,12 +154,14 @@ const Footer = () => {
             ))}
           </div>
         </Container>
-        <Container className="border-t not-prose flex flex-col md:flex-row md:gap-2 gap-6 justify-between md:items-center">
-          <ThemeToggle />
+        <Container className="border-t not-prose flex flex-col md:flex-row md:gap-2 gap-6 justify-between md:items-end">
           <p className="text-muted-foreground">
-            &copy; <a href="https://9d8.dev">9d8</a>. All rights reserved.
-            2025-present.
+            &copy; {new Date().getFullYear()} Rivers Marine LLC. All rights reserved.
           </p>
+          <div className="flex flex-col items-end gap-2">
+            <ThemeToggle />
+            <p className="text-muted-foreground">Developed by <a href="https://leadwise.pro" target="_blank" rel="noopener noreferrer" className="hover:underline underline-offset-4 pointer-cursor">LeadWise</a></p>
+          </div>
         </Container>
       </Section>
     </footer>

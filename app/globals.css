@@ -1,9 +1,122 @@
+@import "./typography.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+
+  /* LeadWise Theme Override for riversmarine.net */
   :root {
+    --background: 210.0000 40.0000% 98.0392%;
+    --foreground: 100 18.1818% 12.9412%;
+    --card: 0 0% 100%;
+    --card-foreground: 217.2414 32.5843% 17.4510%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 217.2414 32.5843% 17.4510%;
+    --primary: 197.7600 57.6037% 42.5490%;
+    --primary-foreground: 150 7.6923% 94.9020%;
+    --secondary: 43.1250 73.5632% 65.8824%;
+    --secondary-foreground: 41.2500 53.3333% 94.1176%;
+    --muted: 220.0000 14.2857% 95.8824%;
+    --muted-foreground: 220 8.9362% 46.0784%;
+    --accent: 220 13.0435% 90.9804%;
+    --accent-foreground: 216.9231 19.1176% 26.6667%;
+    --destructive: 0 84.2365% 60.1961%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 216.0000 12.1951% 83.9216%;
+    --input: 216.0000 12.1951% 83.9216%;
+    --ring: 197.7600 57.6037% 42.5490%;
+    --chart-1: 197.7600 57.6037% 42.5490%;
+    --chart-2: 197.5758 57.8947% 33.5294%;
+    --chart-3: 198.3333 57.1429% 24.7059%;
+    --chart-4: 197.3333 56.9620% 15.4902%;
+    --chart-5: 195.7895 57.5758% 6.4706%;
+    --sidebar: 220.0000 14.2857% 95.8824%;
+    --sidebar-foreground: 217.2414 32.5843% 17.4510%;
+    --sidebar-primary: 197.7600 57.6037% 42.5490%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 196.9231 56.5217% 86.4706%;
+    --sidebar-accent-foreground: 216.9231 19.1176% 26.6667%;
+    --sidebar-border: 216.0000 12.1951% 83.9216%;
+    --sidebar-ring: 197.7600 57.6037% 42.5490%;
+    --font-sans: Rubik, ui-sans-serif, sans-serif, system-ui;
+    --font-serif: Merriweather, serif;
+    --font-mono: JetBrains Mono, monospace;
+    --radius: 0.5rem;
+    --shadow-x: 0px;
+    --shadow-y: 4px;
+    --shadow-blur: 8px;
+    --shadow-spread: -1px;
+    --shadow-opacity: 0.1;
+    --shadow-color: hsl(0 0% 0%);
+    --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+    --shadow: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 2px 4px -2px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 4px 6px -2px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+  }
+
+  .dark {
+    --background: 222.2222 47.3684% 11.1765%;
+    --foreground: 214.2857 31.8182% 91.3725%;
+    --card: 217.2414 32.5843% 17.4510%;
+    --card-foreground: 214.2857 31.8182% 91.3725%;
+    --popover: 217.2414 32.5843% 17.4510%;
+    --popover-foreground: 214.2857 31.8182% 91.3725%;
+    --primary: 197.8125 62.7451% 60%;
+    --primary-foreground: 198 83.3333% 7.0588%;
+    --secondary: 45 21.4286% 10.9804%;
+    --secondary-foreground: 43.1250 73.5632% 65.8824%;
+    --muted: 217.2414 32.5843% 17.4510%;
+    --muted-foreground: 217.8947 10.6145% 64.9020%;
+    --accent: 214.2857 46.6667% 2.9412%;
+    --accent-foreground: 216.0000 12.1951% 83.9216%;
+    --destructive: 0 84.2365% 60.1961%;
+    --destructive-foreground: 222.2222 47.3684% 11.1765%;
+    --border: 215 13.7931% 34.1176%;
+    --input: 215 13.7931% 34.1176%;
+    --ring: 197.8846 57.7778% 64.7059%;
+    --chart-1: 198.3333 58.0645% 75.6863%;
+    --chart-2: 197.9562 57.8059% 53.5294%;
+    --chart-3: 197.7600 57.6037% 42.5490%;
+    --chart-4: 198.3333 57.1429% 24.7059%;
+    --chart-5: 197.3333 56.9620% 15.4902%;
+    --sidebar: 217.2414 32.5843% 17.4510%;
+    --sidebar-foreground: 214.2857 31.8182% 91.3725%;
+    --sidebar-primary: 197.8846 57.7778% 64.7059%;
+    --sidebar-primary-foreground: 222.2222 47.3684% 11.1765%;
+    --sidebar-accent: 216.9231 19.1176% 26.6667%;
+    --sidebar-accent-foreground: 216.0000 12.1951% 83.9216%;
+    --sidebar-border: 215 13.7931% 34.1176%;
+    --sidebar-ring: 197.8846 57.7778% 64.7059%;
+    --font-sans: Rubik, ui-sans-serif, sans-serif, system-ui;
+    --font-serif: Merriweather, serif;
+    --font-mono: JetBrains Mono, monospace;
+    --radius: 0.5rem;
+    --shadow-x: 0px;
+    --shadow-y: 4px;
+    --shadow-blur: 8px;
+    --shadow-spread: -1px;
+    --shadow-opacity: 0.1;
+    --shadow-color: hsl(0 0% 0%);
+    --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+    --shadow: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 2px 4px -2px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 4px 6px -2px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
+  }
+
+
+  /* :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
 
@@ -63,7 +176,7 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
-  }
+  } */
 }
 
 @layer base {
@@ -83,6 +196,7 @@
 }
 
 @layer utilities {
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -94,5 +208,21 @@
     /* IE and Edge */
     scrollbar-width: none;
     /* Firefox */
+  }
+
+  .bg-homepage {
+    background: #F8F3E8;
+    background: -webkit-linear-gradient(180deg, rgba(248, 243, 232, 1) 0%, rgba(248, 248, 248, 1) 100%);
+    background: -moz-linear-gradient(180deg, rgba(248, 243, 232, 1) 0%, rgba(248, 248, 248, 1) 100%);
+    background: linear-gradient(180deg, rgba(248, 243, 232, 1) 0%, rgba(248, 248, 248, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#F8F3E8", endColorstr="#F8F8F8", GradientType=0);
+  }
+
+  .dark .bg-homepage {
+    background: #221F16;
+    background: -webkit-linear-gradient(180deg, rgba(34, 31, 22, 1) 0%, rgba(18, 18, 18, 1) 100%);
+    background: -moz-linear-gradient(180deg, rgba(34, 31, 22, 1) 0%, rgba(18, 18, 18, 1) 100%);
+    background: linear-gradient(180deg, rgba(34, 31, 22, 1) 0%, rgba(18, 18, 18, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#221F16", endColorstr="#121212", GradientType=0);
   }
 }
