@@ -14,6 +14,7 @@ import { NextJsIcon } from "@/components/icons/nextjs";
 
 // Config
 import { siteConfig } from "@/site.config";
+import { Reveal } from "@/components/ui/reveal";
 
 
 // This page is using the craft.tsx component and design system
@@ -35,15 +36,15 @@ const Hero = () => {
       <section>
         <div className="mx-auto">
           <div className="mx-auto lg:mx-0 text-pretty">
-            <span className="inline-flex items-center rounded-full bg-accent/50 text-accent-foreground px-2 py-0.5 text-base font-medium ring-1 ring-accent-foreground/10">
+            <Reveal as="span" className="inline-flex items-center rounded-full bg-accent/50 text-accent-foreground px-2 py-0.5 text-base font-medium ring-1 ring-accent-foreground/10">
               Coming soon
-            </span>
-            <h2 className="mt-4 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            </Reveal>
+            <Reveal as="h2" delay={100} className="mt-4 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
               Towboat & Barge Brokerage You Can Rely On
-            </h2>
-            <p className="mt-4 text-xl font-medium text-pretty text-muted-foreground sm:text-3xl">
+            </Reveal>
+            <Reveal as="p" delay={200} className="mt-4 text-xl font-medium text-pretty text-muted-foreground sm:text-3xl">
               Uniting waterways in the US and South America
-            </p>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -74,16 +75,18 @@ const Feature = () => {
         <div className="relative mx-auto grid grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:items-center">
           <div className="lg:pr-8 lg:pt-4 sm:col-span-4 lg:col-span-3">
             <div className="lg:max-w-2xl">
-              <p className="mt-2 text-pretty font-semibold tracking-tight text-xl sm:text-2xl">
+              <Reveal as="p" className="mt-2 text-pretty font-semibold tracking-tight text-xl sm:text-2xl">
                 Pushing Forward
-              </p>
-              <p className="mt-2 text-lg/8 text-muted-foreground">
+              </Reveal>
+              <Reveal as="p" delay={100} className="mt-2 text-lg/8 text-muted-foreground">
                 We have supported the economy since 2000
-              </p>
+              </Reveal>
               <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6">
                 {features.map((feature, index) => (
-                  <div
+                  <Reveal
+                    as="div"
                     key={index}
+                    delay={150 + index * 100}
                     className="relative p-8 sm:p-6 lg:p-10 shadow-sm ring-1 ring-muted-foreground/10 bg-card/50"
                   >
                     {feature.variant === 'stat' ? (
@@ -109,13 +112,14 @@ const Feature = () => {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </Reveal>
                 ))}
               </div>
             </div>
           </div>
           <div className="relative lg:mt-0 md:col-span-1 lg:col-span-2 lg:-ml-16">
-            <img
+            <Reveal as="img"
+              delay={250}
               alt="Towboat silhouette"
               src="/img/riversmarine-towboats-and-barges-05.png"
               width={2432}
@@ -124,9 +128,11 @@ const Feature = () => {
             />
           </div>
         </div>
-        <Button className="mt-4 pointer-cursor" asChild>
-          <Link className="hover:opacity-75 transition-all" href={`mailto:${siteConfig.site_email}`}>Contact Us - Email</Link>
-        </Button>
+        <Reveal delay={200} className="inline-block">
+          <Button className="mt-4 pointer-cursor" asChild>
+            <Link className="hover:opacity-75 transition-all" href={`mailto:${siteConfig.site_email}`}>Contact Us - Email</Link>
+          </Button>
+        </Reveal>
       </div>
     </div >
   );
@@ -137,18 +143,18 @@ const About = () => {
     <section className="py-8 md:py-12">
       <div className="mx-auto">
         <div className="flex items-start gap-6">
-          <img
+          <Reveal as="img"
             src="/img/seanpatric-image.jpg"
             alt="Sean P Smith near a towboat"
             width={96}
             height={96}
             className="size-24 lg:size-28 object-cover shadow-sm ring-1 ring-muted-foreground/10"
           />
-          <p className="text-base text-pretty sm:text-lg text-muted-foreground max-w-lg">
+          <Reveal as="p" delay={120} className="text-base text-pretty sm:text-lg text-muted-foreground max-w-lg">
             With over 25 years working with US and South American waterways,
             <span className="ml-1 font-semibold italic text-foreground">Sean P Smith</span>
             {" "}provides dependable brokerage services for towboats and barges.
-          </p>
+          </Reveal>
         </div>
       </div>
     </section>
