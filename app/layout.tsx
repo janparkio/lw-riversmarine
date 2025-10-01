@@ -67,7 +67,7 @@ export default async function RootLayout({
 const Nav = ({ className, children, id }: NavProps) => {
   return (
     <nav
-      className={cn("sticky z-50 top-0", "border-b", className)}
+      className={cn("sticky z-50 top-0 bg-background/20 backdrop-blur-sm", "border-b", className)}
       id={id}
     >
       <div
@@ -78,18 +78,18 @@ const Nav = ({ className, children, id }: NavProps) => {
           className="hover:opacity-75 transition-all flex gap-4 items-center"
           href="/"
         >
-          <Image
+          {/* <Image
             src={Logo}
             alt="Logo"
             loading="eager"
             className="dark:invert"
             width={42}
             height={26.44}
-          ></Image>
-          <h2 className="text-sm">{siteConfig.site_name}</h2>
+          ></Image> */}
+          <h2 className="font-bold text-xl">Rivers Marine</h2>
         </Link>
         {children}
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <div className="mx-2 hidden md:flex">
             {Object.entries(mainMenu).map(([key, href]) => (
               <Button key={href} asChild variant="ghost" size="sm">
@@ -103,7 +103,7 @@ const Nav = ({ className, children, id }: NavProps) => {
             <Link href="https://riversmarine.net">Get Started</Link>
           </Button>
           <MobileNav />
-        </div>
+        </div> */}
       </div>
     </nav>
   );
@@ -117,19 +117,19 @@ const Footer = () => {
           <div className="flex flex-col gap-6 not-prose">
             <Link href="/">
               <h3 className="sr-only">{siteConfig.site_name}</h3>
-              <Image
+              {/* <Image
                 src={Logo}
                 alt="Logo"
                 className="dark:invert"
                 width={42}
                 height={26.44}
-              ></Image>
+              ></Image> */}
             </Link>
             <p>
               <Balancer>{siteConfig.site_description}</Balancer>
             </p>
           </div>
-          <div className="flex flex-col gap-2 text-sm">
+          {/* <div className="flex flex-col gap-2 text-sm">
             <h5 className="font-medium text-base">Website</h5>
             {Object.entries(mainMenu).map(([key, href]) => (
               <Link
@@ -152,12 +152,17 @@ const Footer = () => {
                 {key.charAt(0).toUpperCase() + key.slice(1)}
               </Link>
             ))}
-          </div>
+          </div> */}
         </Container>
         <Container className="border-t not-prose flex flex-col md:flex-row md:gap-2 gap-6 justify-between md:items-end">
-          <p className="text-muted-foreground">
+          <div className="text-muted-foreground">
             &copy; {new Date().getFullYear()} Rivers Marine LLC. All rights reserved.
-          </p>
+            {" "}
+            <br className="block" />
+            St. Louis, MO, USA. Asunción, Paraguay.
+            <br className="block" />
+            <Link href="/privacy-policy" className="pt-2 md:pt-4 hover:underline underline-offset-4 pointer-cursor">Privacy Policy</Link>
+          </div>
           <div className="flex flex-col items-end gap-2">
             <ThemeToggle />
             <p className="text-muted-foreground">Developed by <a href="https://leadwise.pro" target="_blank" rel="noopener noreferrer" className="hover:underline underline-offset-4 pointer-cursor">LeadWise</a></p>

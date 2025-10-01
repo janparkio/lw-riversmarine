@@ -1,6 +1,8 @@
 // Craft Imports
 import { Section, Container, Prose } from "@/components/craft";
 import Balancer from "react-wrap-balancer";
+import { Button } from "@/components/ui/button";
+
 
 // Next.js Imports
 import Link from "next/link";
@@ -10,7 +12,8 @@ import { File, Pen, Tag, Diamond, User, Folder } from "lucide-react";
 import { WordPressIcon } from "@/components/icons/wordpress";
 import { NextJsIcon } from "@/components/icons/nextjs";
 
-//
+// Config
+import { siteConfig } from "@/site.config";
 
 
 // This page is using the craft.tsx component and design system
@@ -19,8 +22,8 @@ export default function Home() {
     <Section>
       <Container>
         <Hero />
-        <About />
         <Feature />
+        <About />
       </Container>
     </Section>
   );
@@ -32,7 +35,10 @@ const Hero = () => {
       <section>
         <div className="mx-auto">
           <div className="mx-auto lg:mx-0 text-pretty">
-            <h2 className="mt-2 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            <span className="inline-flex items-center rounded-full bg-accent/50 text-accent-foreground px-2 py-0.5 text-base font-medium ring-1 ring-accent-foreground/10">
+              Coming soon
+            </span>
+            <h2 className="mt-4 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
               Towboat & Barge Brokerage You Can Rely On
             </h2>
             <p className="mt-4 text-xl font-medium text-pretty text-muted-foreground sm:text-3xl">
@@ -118,6 +124,9 @@ const Feature = () => {
             />
           </div>
         </div>
+        <Button className="mt-4 pointer-cursor" asChild>
+          <Link className="hover:opacity-75 transition-all" href={`mailto:${siteConfig.site_email}`}>Contact Us - Email</Link>
+        </Button>
       </div>
     </div >
   );
@@ -129,13 +138,13 @@ const About = () => {
       <div className="mx-auto">
         <div className="flex items-start gap-6">
           <img
-            src="/img/riversmarine-towboats-and-barges-02.png"
+            src="/img/seanpatric-image.jpg"
             alt="Sean P Smith near a towboat"
             width={96}
             height={96}
-            className="h-24 w-24 rounded object-cover shadow-sm ring-1 ring-muted-foreground/10"
+            className="size-24 lg:size-28 object-cover shadow-sm ring-1 ring-muted-foreground/10"
           />
-          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl">
+          <p className="text-base text-pretty sm:text-lg text-muted-foreground max-w-lg">
             With over 25 years working with US and South American waterways,
             <span className="ml-1 font-semibold italic text-foreground">Sean P Smith</span>
             {" "}provides dependable brokerage services for towboats and barges.

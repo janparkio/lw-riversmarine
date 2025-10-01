@@ -5,6 +5,15 @@ export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-pathname', request.nextUrl.pathname);
 
+  // Block access to /pages and /posts during development
+  if (process.env.NODE_ENV === 'development') {
+    const pathname = request.nextUrl.pathname;
+    
+    if (pathname.startsWith('/pages') || pathname.startsWith('/posts')) {
+      return NextResponse.redirect(new URL('/not-found', request.url));
+    }
+  }
+
   return NextResponse.next({
     request: {
       headers: requestHeaders,
