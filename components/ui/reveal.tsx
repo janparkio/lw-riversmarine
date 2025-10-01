@@ -8,9 +8,11 @@ type RevealOwnProps<T extends React.ElementType> = {
     children?: React.ReactNode;
     className?: string;
     delay?: number;
+    stagger?: number;
     once?: boolean;
     threshold?: number;
     rootMargin?: string;
+    preserveStack?: boolean;
 };
 
 type RevealProps<T extends React.ElementType> = RevealOwnProps<T> &
@@ -23,48 +25,68 @@ export function Reveal<T extends React.ElementType = "div">(
         as: Component = "div",
         children,
         className,
-        delay = 0,
+        delay,
+        stagger = 80,
         once = true,
-        threshold = 0.15,
-        rootMargin = "0px 0px -10% 0px",
+        threshold = 0.1,
+        rootMargin = "0px",
+        preserveStack = false,
         ...rest
     } = props;
 
     const ref = React.useRef<HTMLElement | null>(null);
-    const [inView, setInView] = React.useState(false);
 
     React.useEffect(() => {
         const node = ref.current;
         if (!node) return;
 
+        // Find all animation-on-scroll children
+        const animatedChildren = node.querySelectorAll('.animation-on-scroll');
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        setInView(true);
+                        // If this element itself has the animation class
+                        if (entry.target === node) {
+                            setTimeout(() => {
+                                entry.target.classList.add('visible');
+                            }, delay || 0);
+                        } else {
+                            // Handle child elements with stagger
+                            const children = Array.from(animatedChildren);
+                            const index = children.indexOf(entry.target);
+                            setTimeout(() => {
+                                entry.target.classList.add('visible');
+                            }, (delay || 0) + (index >= 0 ? index * stagger : 0));
+                        }
+
                         if (once) observer.unobserve(entry.target);
                     } else if (!once) {
-                        setInView(false);
+                        entry.target.classList.remove('visible');
                     }
                 });
             },
             { threshold, rootMargin }
         );
 
+        // Observe the main element
         observer.observe(node);
+
+        // Observe all children with animation-on-scroll class
+        animatedChildren.forEach(child => observer.observe(child));
+
         return () => observer.disconnect();
-    }, [once, threshold, rootMargin]);
+    }, [delay, stagger, once, threshold, rootMargin]);
 
     return (
         <Component
             ref={ref as any}
             className={cn(
-                "will-change-transform transition-opacity transition-transform duration-700 ease-out",
-                inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2",
-                "motion-reduce:opacity-100 motion-reduce:translate-y-0",
+                "animation-on-scroll",
+                preserveStack && "animation-preserve-stack",
                 className
             )}
-            style={{ transitionDelay: `${delay}ms` }}
             {...rest}
         >
             {children}
