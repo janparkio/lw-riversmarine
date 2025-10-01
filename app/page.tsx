@@ -10,7 +10,7 @@ import { File, Pen, Tag, Diamond, User, Folder } from "lucide-react";
 import { WordPressIcon } from "@/components/icons/wordpress";
 import { NextJsIcon } from "@/components/icons/nextjs";
 
-import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/20/solid'
+//
 
 
 // This page is using the craft.tsx component and design system
@@ -46,20 +46,17 @@ const Hero = () => {
 
 const features = [
   {
-    name: 'Push to deploy.',
-    description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
-    icon: CloudArrowUpIcon,
+    variant: 'stat',
+    stat: '25+',
+    label: 'years experience',
   },
   {
-    name: 'SSL certificates.',
-    description: 'Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.',
-    icon: LockClosedIcon,
+    heading: 'Specialized',
+    lines: ['in the US', 'and South America'],
   },
   {
-    name: 'Database backups.',
-    description: 'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    icon: ServerIcon,
+    heading: 'Supporting',
+    lines: ['towboat owners', 'and operators'],
   },
 ]
 
@@ -67,38 +64,58 @@ const Feature = () => {
   return (
     <div className="py-12 md:py-24">
       <div className="mx-auto">
-        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+        <div className="relative mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-center">
           <div className="lg:pr-8 lg:pt-4">
-            <div className="lg:max-w-lg">
+            <div className="lg:max-w-2xl">
               <p className="mt-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
                 Pushing Forward
               </p>
               <p className="mt-6 text-lg/8 text-gray-700 dark:text-gray-300">
                 We have supported the economy since 2000
               </p>
-              <dl className="mt-10 max-w-xl space-y-8 text-base/7 text-gray-600 lg:max-w-none dark:text-gray-400">
-                {features.map((feature) => (
-                  <div key={feature.name} className="relative pl-9">
-                    <dt className="inline font-semibold text-gray-900 dark:text-white">
-                      <feature.icon
-                        aria-hidden="true"
-                        className="absolute left-1 top-1 size-5 text-indigo-600 dark:text-indigo-400"
-                      />
-                      {feature.name}
-                    </dt>{' '}
-                    <dd className="inline">{feature.description}</dd>
+              <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {features.map((feature, index) => (
+                  <div
+                    key={index}
+                    className="relative rounded-2xl bg-white p-8 shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/10"
+                  >
+                    {feature.variant === 'stat' ? (
+                      <div>
+                        <div className="text-5xl font-semibold leading-none text-[#b68a40]">
+                          {feature.stat}
+                        </div>
+                        <p className="mt-3 text-base text-gray-700 dark:text-gray-300">
+                          {feature.label}
+                        </p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-xl font-semibold text-[#b68a40]">
+                          {feature.heading}
+                        </p>
+                        <div className="mt-3 space-y-1 text-gray-900 dark:text-gray-100">
+                          {feature.lines?.map((line: string, i: number) => (
+                            <p key={i} className="text-base">
+                              {line}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
-              </dl>
+              </div>
             </div>
           </div>
-          <img
-            alt="Product screenshot"
-            src="/img/riversmarine-towboats-and-barges-02.png"
-            width={2432}
-            height={1442}
-            className="w-[48rem] max-w-none sm:w-[42rem] md:-ml-4 lg:-ml-0 dark:invert"
-          />
+          <div className="relative lg:mt-0">
+            <img
+              alt="Towboat silhouette"
+              src="/img/riversmarine-towboats-and-barges-02.png"
+              width={2432}
+              height={1442}
+              className="w-[44rem] max-w-none sm:w-[40rem] lg:w-[48rem] lg:-ml-16 xl:-ml-24 dark:invert relative z-10"
+            />
+          </div>
         </div>
       </div>
     </div >
