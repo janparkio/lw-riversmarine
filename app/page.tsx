@@ -70,10 +70,10 @@ const features = [
 
 const Feature = () => {
   return (
-    <div className="py-12 md:py-24">
+    <div className="py-12">
       <div className="mx-auto">
-        <div className="relative mx-auto grid grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:items-center">
-          <div className="lg:pr-8 lg:pt-4 sm:col-span-4 lg:col-span-3">
+        <div className="relative mx-auto grid grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:items-center justify-between">
+          <div className="lg:pt-4 md:col-span-4 lg:col-span-3">
             <div className="lg:max-w-2xl">
               <Reveal as="p" className="mt-2 text-pretty font-semibold tracking-tight text-xl sm:text-2xl">
                 Pushing Forward
@@ -117,15 +117,46 @@ const Feature = () => {
               </div>
             </div>
           </div>
-          <div className="relative lg:mt-0 md:col-span-1 lg:col-span-2 lg:-ml-16">
-            <Reveal as="img"
-              delay={500}
-              alt="Towboat silhouette"
-              src="/img/riversmarine-Hopper_Barge_Tug_02-opt.png"
-              width={2432}
-              height={1442}
-              className="w-[44rem] max-w-none lg:w-[64rem] xl:-ml-12 dark:invert relative z-10"
-            />
+          <div className="relative -mt-48 md:col-span-1 lg:-mt-64 lg:-ml-32 xl:-ml-56 group">
+            <div className="relative transition-transform duration-500 ease-out hover:scale-105 drop-shadow-2xl">
+
+              {/* Bottom water wave - behind the boat */}
+              <Reveal
+                as="img"
+                delay={500}
+                src="/img/riversmarine-controlled-river-waves-bottom-1.png"
+                alt=""
+                width={2432}
+                height={1442}
+                className="absolute inset-0 w-[44rem] max-w-none lg:w-[96rem] dark:invert opacity-100 pointer-events-none"
+                style={{ zIndex: 1 }}
+              />
+
+              {/* Towboat - middle layer with water-bob animation */}
+              <Reveal
+                as="img"
+                delay={900}
+                alt="Towboat Hopper Barge Tug"
+                src="/img/riversmarine-controlled-river-waves-towboat-1.png"
+                width={2432}
+                height={1442}
+                className="w-[44rem] max-w-none lg:w-[96rem] relative water-bob pointer-events-none"
+                style={{ zIndex: 2 }}
+              />
+
+              {/* Front water wave - in front of the boat */}
+              <Reveal
+                as="img"
+                delay={500}
+                src="/img/riversmarine-controlled-river-waves-front-1.png"
+                alt=""
+                width={2432}
+                height={1442}
+                className="absolute inset-0 w-[44rem] max-w-none lg:w-[96rem] dark:invert opacity-100 pointer-events-none"
+                style={{ zIndex: 3 }}
+              />
+
+            </div>
           </div>
         </div>
         <Reveal delay={700} className="inline-block">
