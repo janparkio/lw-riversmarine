@@ -70,7 +70,7 @@ const features = [
 
 const Feature = () => {
   return (
-    <div className="py-12">
+    <div className="py-16 lg:py-0">
       <div className="mx-auto">
         <div className="relative mx-auto grid grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:items-center justify-between">
           <div className="lg:pt-4 md:col-span-4 lg:col-span-3">
@@ -128,7 +128,7 @@ const Feature = () => {
                 alt=""
                 width={2432}
                 height={1442}
-                className="absolute inset-0 w-[44rem] max-w-none lg:w-[96rem] dark:invert opacity-100 pointer-events-none"
+                className="absolute inset-0 w-[52rem] max-w-none lg:w-[96rem] dark:invert opacity-100 pointer-events-none"
                 style={{ zIndex: 1 }}
               />
 
@@ -140,7 +140,7 @@ const Feature = () => {
                 src="/img/riversmarine-controlled-river-waves-towboat-1.png"
                 width={2432}
                 height={1442}
-                className="w-[44rem] max-w-none lg:w-[96rem] relative water-bob pointer-events-none"
+                className="w-[52rem] max-w-none lg:w-[96rem] relative water-bob pointer-events-none"
                 style={{ zIndex: 2 }}
               />
 
@@ -152,7 +152,7 @@ const Feature = () => {
                 alt=""
                 width={2432}
                 height={1442}
-                className="absolute inset-0 w-[44rem] max-w-none lg:w-[96rem] dark:invert opacity-100 pointer-events-none"
+                className="absolute inset-0 w-[52rem] max-w-none lg:w-[96rem] dark:invert opacity-100 pointer-events-none"
                 style={{ zIndex: 3 }}
               />
 
