@@ -140,7 +140,7 @@ const Feature = () => {
                 src="/img/riversmarine-controlled-river-waves-towboat-1.png"
                 width={2432}
                 height={1442}
-                className="w-[52rem] max-w-none lg:w-[96rem] relative water-bob pointer-events-none"
+                className="w-[52rem] max-w-none lg:w-[96rem] relative pointer-events-none"
                 style={{ zIndex: 2 }}
               />
 
