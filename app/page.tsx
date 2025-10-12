@@ -43,7 +43,7 @@ const Hero = () => {
               Towboat & Barge Brokerage You Can Rely On
             </Reveal>
             <Reveal as="p" className="mt-4 text-xl font-medium text-pretty text-muted-foreground sm:text-3xl">
-              Uniting waterways in the US and South America
+              Supporting waterways in the US and South America
             </Reveal>
           </div>
         </div>
