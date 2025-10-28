@@ -308,11 +308,11 @@ export default async function Page({
                   </tr>
                 )}
 
-                {/* Dimensions - Depth */}
+                {/* Dimensions - Hull Depth */}
                 {dimensions.depth && (
                   <tr className="border-b">
                     <td className="py-3 px-4 bg-muted/30 font-medium text-sm">
-                      Depth
+                      Hull Depth
                     </td>
                     <td className="py-3 px-4">
                       <DimensionValue
