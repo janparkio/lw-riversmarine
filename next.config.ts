@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "wp.riversmarine.net",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   async redirects() {

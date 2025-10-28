@@ -10,6 +10,7 @@ import type {
   Page,
   Author,
   FeaturedMedia,
+  Vessel,
 } from "./wordpress.d";
 
 const baseUrl = process.env.WORDPRESS_URL;
@@ -418,6 +419,142 @@ export async function getPostsByAuthorPaginated(
   };
 
   return wordpressFetchWithPagination<Post[]>("/wp-json/wp/v2/posts", query);
+}
+
+// ============================================================================
+// Vessel Functions
+// ============================================================================
+
+export async function getVesselsPaginated(
+  page: number = 1,
+  perPage: number = 9,
+  filterParams?: {
+    category?: string;
+    search?: string;
+  }
+): Promise<WordPressResponse<Vessel[]>> {
+  const query: Record<string, any> = {
+    _embed: true,
+    per_page: perPage,
+    page,
+  };
+
+  // Build cache tags based on filters
+  const cacheTags = ["wordpress", "vessels"];
+
+  if (filterParams?.search) {
+    query.search = filterParams.search;
+    cacheTags.push("vessels-search");
+  }
+  if (filterParams?.category) {
+    query.categories = filterParams.category;
+    cacheTags.push(`vessels-category-${filterParams.category}`);
+  }
+
+  // Add page-specific cache tag for granular invalidation
+  cacheTags.push(`vessels-page-${page}`);
+
+  const url = `${baseUrl}/wp-json/wp/v2/vessel${
+    query ? `?${querystring.stringify(query)}` : ""
+  }`;
+  const userAgent = "Next.js WordPress Client";
+
+  const response = await fetch(url, {
+    headers: {
+      "User-Agent": userAgent,
+    },
+    next: {
+      tags: cacheTags,
+      revalidate: 3600, // 1 hour cache
+    },
+  });
+
+  if (!response.ok) {
+    throw new WordPressAPIError(
+      `WordPress API request failed: ${response.statusText}`,
+      response.status,
+      url
+    );
+  }
+
+  const data = await response.json();
+
+  return {
+    data,
+    headers: {
+      total: parseInt(response.headers.get("X-WP-Total") || "0", 10),
+      totalPages: parseInt(response.headers.get("X-WP-TotalPages") || "0", 10),
+    },
+  };
+}
+
+export async function getAllVessels(filterParams?: {
+  category?: string;
+  search?: string;
+}): Promise<Vessel[]> {
+  const query: Record<string, any> = {
+    _embed: true,
+    per_page: 100,
+  };
+
+  if (filterParams?.search) {
+    query.search = filterParams.search;
+  }
+  if (filterParams?.category) {
+    query.categories = filterParams.category;
+  }
+
+  return wordpressFetch<Vessel[]>("/wp-json/wp/v2/vessel", query);
+}
+
+export async function getVesselById(id: number): Promise<Vessel> {
+  return wordpressFetch<Vessel>(`/wp-json/wp/v2/vessel/${id}`);
+}
+
+export async function getVesselBySlug(slug: string): Promise<Vessel> {
+  return wordpressFetch<Vessel[]>("/wp-json/wp/v2/vessel", { slug }).then(
+    (vessels) => vessels[0]
+  );
+}
+
+export async function getAllVesselSlugs(): Promise<{ slug: string }[]> {
+  const allSlugs: { slug: string }[] = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const response = await wordpressFetchWithPagination<Vessel[]>(
+      "/wp-json/wp/v2/vessel",
+      {
+        per_page: 100,
+        page,
+        _fields: "slug", // Only fetch slug field for performance
+      }
+    );
+
+    const vessels = response.data;
+    allSlugs.push(...vessels.map((vessel) => ({ slug: vessel.slug })));
+
+    hasMore = page < response.headers.totalPages;
+    page++;
+  }
+
+  return allSlugs;
+}
+
+export async function getVesselsByCategoryPaginated(
+  categoryId: number,
+  page: number = 1,
+  perPage: number = 9
+): Promise<WordPressResponse<Vessel[]>> {
+  const query = {
+    _embed: true,
+    per_page: perPage,
+    page,
+    categories: categoryId,
+  };
+
+  return wordpressFetchWithPagination<Vessel[]>("/wp-json/wp/v2/vessel", query);
 }
 
 export { WordPressAPIError };

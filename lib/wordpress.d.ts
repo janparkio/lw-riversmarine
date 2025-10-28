@@ -92,6 +92,56 @@ export interface Page extends WPEntity {
   meta: Record<string, unknown>;
 }
 
+// Vessel types
+export interface VesselDimensions {
+  length: number | string;
+  beam: number | string;
+  depth: number | string;
+  draft: number | string;
+  air_draft: number | string;
+}
+
+export interface VesselFuel {
+  type: string;
+  notes: string;
+  bunkering: string;
+}
+
+export interface VesselSpecs {
+  main_engines: string;
+  reduction_gears: string;
+  year_built: number;
+  horse_power: number;
+  total_horse_power: number;
+  dimensions: VesselDimensions;
+  length_unit: "ft" | "m";
+  propulsion: string;
+  location: string;
+  fuel: VesselFuel;
+  condition: string;
+}
+
+export interface VesselACF {
+  meta_description: string;
+  has_asking_price: boolean;
+  asking_price: number;
+  currency: "usd" | "eur" | "gbp";
+  specs: VesselSpecs;
+  gallery?: number[]; // Array of media IDs
+}
+
+export interface Vessel extends WPEntity {
+  title: RenderedTitle;
+  content: RenderedContent;
+  featured_media: number;
+  template: string;
+  meta: {
+    _acf_changed?: boolean;
+  };
+  categories: number[];
+  acf: VesselACF;
+}
+
 // Taxonomy types
 interface Taxonomy {
   id: number;
