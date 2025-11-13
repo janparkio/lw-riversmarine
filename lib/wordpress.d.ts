@@ -1,4 +1,10 @@
 // Common types that are reused across multiple entities
+export interface PolylangMeta {
+  lang: string | null;
+  locale: string | null;
+  translations: Record<string, number>;
+}
+
 interface WPEntity {
   id: number;
   date: string;
@@ -11,6 +17,7 @@ interface WPEntity {
   guid: {
     rendered: string;
   };
+  polylang?: PolylangMeta;
 }
 
 interface RenderedContent {
@@ -93,39 +100,93 @@ export interface Page extends WPEntity {
 }
 
 // Vessel types
+export interface ACFSelectValue {
+  value: string;
+  label: string;
+}
+
+export type VesselType = "towboat" | "tugboat" | "barge";
+
 export interface VesselDimensions {
-  length: number | string;
-  beam: number | string;
-  depth: number | string;
-  draft: number | string;
-  air_draft: number | string;
+  length?: number | null;
+  beam?: number | null;
+  depth?: number | null;
+  draft?: number | null;
+  air_draft?: number | null;
+}
+
+export interface VesselCoreSpecs {
+  year_built?: number | null;
+  dimensions?: VesselDimensions;
+  deadweight_tons?: number | null;
+  classification_society?: string | null;
+  length_unit?: "ft" | "m";
+}
+
+export interface VesselPropulsionPowerSpecs {
+  main_engines?: string | null;
+  reduction_gears?: string | null;
+  horse_power?: number | null;
+  total_horse_power?: number | null;
+  propulsion?: ACFSelectValue | null;
+}
+
+export interface VesselBargeTankFields {
+  regulated_us?: boolean;
+  cargo_capacity?: {
+    barrels?: number | null;
+    m3_metric_tons?: string | null;
+  };
+  pumps?: string | null;
+  cargo_tank_material?: ACFSelectValue | null;
+  vapor_recovery?: ACFSelectValue | null;
+  heated?: ACFSelectValue | null;
+}
+
+export interface VesselBargeSpecs {
+  tank_fields?: VesselBargeTankFields | null;
 }
 
 export interface VesselFuel {
-  type: string;
-  notes: string;
-  bunkering: string;
+  type?: string | null;
+  notes?: string | null;
+  bunkering?: string | null;
 }
 
 export interface VesselSpecs {
-  main_engines: string;
-  reduction_gears: string;
-  year_built: number;
-  horse_power: number;
-  total_horse_power: number;
-  dimensions: VesselDimensions;
-  length_unit: "ft" | "m";
-  propulsion: string;
-  location: string;
-  fuel: VesselFuel;
-  condition: string;
+  core_specs?: VesselCoreSpecs;
+  propulsion_power_specs?: VesselPropulsionPowerSpecs;
+  barge_specs?: VesselBargeSpecs;
+  fuel?: VesselFuel;
 }
 
+export type CurrencyCode =
+  | "usd"
+  | "eur"
+  | "gbp"
+  | "jpy"
+  | "cny"
+  | "cad"
+  | "aud"
+  | "chf"
+  | "brl"
+  | "ars"
+  | "mxn"
+  | "clp"
+  | "pen"
+  | "cop"
+  | "pyg"
+  | "inr";
+
 export interface VesselACF {
-  meta_description: string;
+  vessel_type?: VesselType | null;
+  barge_type?: ACFSelectValue | null;
+  location?: string | null;
+  condition?: ACFSelectValue | null;
+  meta_description?: string | null;
   has_asking_price: boolean;
-  asking_price: number;
-  currency: "usd" | "eur" | "gbp";
+  asking_price?: number | null;
+  currency: CurrencyCode;
   specs: VesselSpecs;
   gallery?: number[]; // Array of media IDs
 }

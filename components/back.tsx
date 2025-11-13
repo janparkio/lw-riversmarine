@@ -3,12 +3,12 @@
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 
-export default function BackButton() {
+export default function BackButton({ label }: { label: string }) {
   const router = useRouter();
 
   return (
     <Button variant="outline" size="sm" onClick={() => router.back()}>
-      Go Back
+      {label}
     </Button>
   );
 }

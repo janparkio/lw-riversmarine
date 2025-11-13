@@ -5,7 +5,13 @@ import { Input } from "@/components/ui/input";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
-export function SearchInput({ defaultValue }: { defaultValue?: string }) {
+export function SearchInput({
+  defaultValue,
+  placeholder,
+}: {
+  defaultValue?: string;
+  placeholder: string;
+}) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -24,7 +30,7 @@ export function SearchInput({ defaultValue }: { defaultValue?: string }) {
     <Input
       type="text"
       name="search"
-      placeholder="Search vessels..."
+      placeholder={placeholder}
       defaultValue={defaultValue}
       onChange={(e) => handleSearch(e.target.value)}
     />

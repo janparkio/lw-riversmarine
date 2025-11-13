@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -18,13 +18,19 @@ interface Category {
 interface FilterVesselsProps {
   categories: Category[];
   selectedCategory?: string;
+  labels: {
+    categories: string;
+    reset: string;
+  };
 }
 
 export function FilterVessels({
   categories,
   selectedCategory,
+  labels,
 }: FilterVesselsProps) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleFilterChange = (type: string, value: string) => {
     console.log(`Filter changed: ${type} -> ${value}`);
@@ -32,11 +38,13 @@ export function FilterVessels({
     newParams.delete("page");
     value === "all" ? newParams.delete(type) : newParams.set(type, value);
 
-    router.push(`/vessel?${newParams.toString()}`);
+    router.push(
+      `${pathname}${newParams.toString() ? `?${newParams.toString()}` : ""}`
+    );
   };
 
   const handleResetFilters = () => {
-    router.push("/vessel");
+    router.push(pathname);
   };
 
   const hasCategories = categories.length > 0;
@@ -49,7 +57,7 @@ export function FilterVessels({
       >
         <SelectTrigger disabled={!hasCategories}>
           {hasCategories ? (
-            <SelectValue placeholder="All Categories" />
+            <SelectValue placeholder={labels.categories} />
           ) : (
             "No categories found"
           )}
@@ -65,7 +73,7 @@ export function FilterVessels({
       </Select>
 
       <Button variant="outline" onClick={handleResetFilters}>
-        Reset Filters
+        {labels.reset}
       </Button>
     </div>
   );

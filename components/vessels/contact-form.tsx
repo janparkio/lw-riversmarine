@@ -8,9 +8,13 @@ import { Label } from "@/components/ui/label";
 
 interface ContactFormProps {
   vesselTitle: string;
+  messages?: {
+    success: string;
+    submit: string;
+  };
 }
 
-export function ContactForm({ vesselTitle }: ContactFormProps) {
+export function ContactForm({ vesselTitle, messages }: ContactFormProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,7 +26,10 @@ export function ContactForm({ vesselTitle }: ContactFormProps) {
     e.preventDefault();
     // TODO: Implement form submission logic
     console.log("Form submitted:", { ...formData, vessel: vesselTitle });
-    alert("Thank you for your inquiry! We will contact you shortly.");
+    alert(
+      messages?.success ||
+        "Thank you for your inquiry! We will contact you shortly."
+    );
   };
 
   return (
@@ -77,7 +84,7 @@ export function ContactForm({ vesselTitle }: ContactFormProps) {
       </div>
 
       <Button type="submit" className="w-full" size="lg">
-        Send Inquiry
+        {messages?.submit || "Send Inquiry"}
       </Button>
     </form>
   );

@@ -1,5 +1,6 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
+import { locales, withLocalePath } from "@/i18n/config";
 
 export const maxDuration = 30;
 
@@ -66,10 +67,19 @@ export async function POST(request: NextRequest) {
           revalidateTag(`posts-author-${contentId}`);
           revalidateTag(`author-${contentId}`);
         }
+      } else if (contentType === "vessel") {
+        revalidateTag("vessels");
+        revalidateTag("vessels-page-1");
+        if (contentId) {
+          revalidateTag(`vessel-${contentId}`);
+        }
       }
 
       // Also revalidate the entire layout for safety
       revalidatePath("/", "layout");
+      for (const locale of locales) {
+        revalidatePath(withLocalePath(locale, "/"), "layout");
+      }
 
       return NextResponse.json({
         revalidated: true,

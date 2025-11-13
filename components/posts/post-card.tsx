@@ -3,6 +3,9 @@ import Link from "next/link";
 
 import { Post } from "@/lib/wordpress.d";
 import { cn } from "@/lib/utils";
+import { Locale, withLocalePath } from "@/i18n/config";
+import { formatDate } from "@/lib/format";
+import { getTranslator } from "@/lib/i18n";
 
 import {
   getFeaturedMediaById,
@@ -10,23 +13,26 @@ import {
   getCategoryById,
 } from "@/lib/wordpress";
 
-export async function PostCard({ post }: { post: Post }) {
+export async function PostCard({
+  post,
+  locale,
+}: {
+  post: Post;
+  locale: Locale;
+}) {
+  const t = await getTranslator(locale);
   const media = post.featured_media
-    ? await getFeaturedMediaById(post.featured_media)
+    ? await getFeaturedMediaById(post.featured_media, locale)
     : null;
-  const author = post.author ? await getAuthorById(post.author) : null;
-  const date = new Date(post.date).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  const author = post.author ? await getAuthorById(post.author, locale) : null;
+  const date = formatDate(post.date, locale);
   const category = post.categories?.[0]
-    ? await getCategoryById(post.categories[0])
+    ? await getCategoryById(post.categories[0], locale)
     : null;
 
   return (
     <Link
-      href={`/posts/${post.slug}`}
+      href={withLocalePath(locale, `/posts/${post.slug}`)}
       className={cn(
         "border p-4 bg-accent/30 rounded-lg group flex justify-between flex-col not-prose gap-8",
         "hover:bg-accent/75 transition-all"
@@ -44,7 +50,7 @@ export async function PostCard({ post }: { post: Post }) {
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full text-muted-foreground">
-              No image available
+              {t("posts.card.noImage")}
             </div>
           )}
         </div>
@@ -60,7 +66,7 @@ export async function PostCard({ post }: { post: Post }) {
             __html: post.excerpt?.rendered
               ? post.excerpt.rendered.split(" ").slice(0, 12).join(" ").trim() +
                 "..."
-              : "No excerpt available",
+              : t("posts.card.noExcerpt"),
           }}
         ></div>
       </div>
@@ -68,7 +74,7 @@ export async function PostCard({ post }: { post: Post }) {
       <div className="flex flex-col gap-4">
         <hr />
         <div className="flex justify-between items-center text-xs">
-          <p>{category?.name || "Uncategorized"}</p>
+          <p>{category?.name || t("posts.card.uncategorized")}</p>
           <p>{date}</p>
         </div>
       </div>

@@ -1,40 +1,56 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Vessel } from "@/lib/wordpress.d";
+import { Vessel, VesselType } from "@/lib/wordpress.d";
 import { cn } from "@/lib/utils";
+import { Locale, withLocalePath } from "@/i18n/config";
+import { formatCurrency, formatNumber } from "@/lib/format";
+import { getTranslator } from "@/lib/i18n";
+import { vesselTypeLabels, getSelectLabel } from "@/lib/vessel";
 
 import { getFeaturedMediaById, getCategoryById } from "@/lib/wordpress";
 
-export async function VesselCard({ vessel }: { vessel: Vessel }) {
+export async function VesselCard({
+  vessel,
+  locale,
+}: {
+  vessel: Vessel;
+  locale: Locale;
+}) {
+  const t = await getTranslator(locale);
+  const specs = vessel.acf?.specs ?? {};
+  const coreSpecs = specs.core_specs ?? {};
+  const propulsionSpecs = specs.propulsion_power_specs ?? {};
+  const dimensions = coreSpecs.dimensions ?? {};
+  const lengthUnit = coreSpecs.length_unit ?? "ft";
+  const vesselTypeKey = (vessel.acf?.vessel_type ?? "towboat") as VesselType;
+  const vesselType = vesselTypeLabels[vesselTypeKey] ?? null;
+  const bargeTypeLabel = getSelectLabel(vessel.acf?.barge_type);
+  const propulsionLabel = getSelectLabel(propulsionSpecs.propulsion);
   const media = vessel.featured_media
-    ? await getFeaturedMediaById(vessel.featured_media)
+    ? await getFeaturedMediaById(vessel.featured_media, locale)
     : null;
   const category = vessel.categories?.[0]
-    ? await getCategoryById(vessel.categories[0])
+    ? await getCategoryById(vessel.categories[0], locale)
     : null;
 
-  // Format price with currency
-  const formatPrice = (price: number, currency: string) => {
-    const formatter = new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency.toUpperCase(),
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-    return formatter.format(price);
-  };
-
-  // Format dimensions
-  const dimensions = vessel.acf.specs.dimensions;
-  const lengthUnit = vessel.acf.specs.length_unit;
-  const dimensionsText = `${dimensions.length || "—"} ${lengthUnit} × ${
-    dimensions.beam || "—"
-  } ${lengthUnit}`;
+  const formattedLength = dimensions.length
+    ? `${dimensions.length} ${lengthUnit}`
+    : null;
+  const formattedBeam = dimensions.beam
+    ? `${dimensions.beam} ${lengthUnit}`
+    : null;
+  const dimensionsText = formattedLength
+    ? formattedBeam
+      ? `${formattedLength} × ${formattedBeam}`
+      : formattedLength
+    : formattedBeam || "—";
+  const yearBuilt = coreSpecs.year_built ?? "—";
+  const totalHorsePower = propulsionSpecs.total_horse_power;
 
   return (
     <Link
-      href={`/vessel/${vessel.slug}`}
+      href={withLocalePath(locale, `/vessel/${vessel.slug}`)}
       className={cn(
         "border p-4 bg-accent/30 rounded-lg group flex justify-between flex-col not-prose gap-6",
         "hover:bg-accent/75 transition-all"
@@ -64,34 +80,49 @@ export async function VesselCard({ vessel }: { vessel: Vessel }) {
           className="text-xl text-primary font-medium group-hover:underline decoration-muted-foreground underline-offset-4 decoration-dotted transition-all"
         ></div>
 
+        {(vesselType || bargeTypeLabel) && (
+          <div className="text-sm text-muted-foreground flex flex-wrap gap-2">
+            {vesselType && <span>{vesselType}</span>}
+            {bargeTypeLabel && <span>• {bargeTypeLabel}</span>}
+          </div>
+        )}
+
         {/* Vessel specs in structured format */}
         <div className="flex flex-col gap-2 text-sm">
           <div className="grid grid-cols-2 gap-2">
             <div className="flex flex-col">
-              <span className="text-muted-foreground text-xs">Year Built</span>
+              <span className="text-muted-foreground text-xs">
+                {t("vessels.card.yearBuilt")}
+              </span>
               <span className="font-medium">
-                {vessel.acf.specs.year_built || "—"}
+                {yearBuilt || "—"}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-muted-foreground text-xs">Total HP</span>
+              <span className="text-muted-foreground text-xs">
+                {t("vessels.card.totalHp")}
+              </span>
               <span className="font-medium">
-                {vessel.acf.specs.total_horse_power
-                  ? `${vessel.acf.specs.total_horse_power.toLocaleString()} HP`
+                {totalHorsePower
+                  ? `${formatNumber(totalHorsePower, locale)} HP`
                   : "—"}
               </span>
             </div>
           </div>
 
           <div className="flex flex-col">
-            <span className="text-muted-foreground text-xs">Dimensions</span>
+            <span className="text-muted-foreground text-xs">
+              {t("vessels.card.dimensions")}
+            </span>
             <span className="font-medium">{dimensionsText}</span>
           </div>
 
-          {vessel.acf.specs.propulsion && (
+          {propulsionLabel && (
             <div className="flex flex-col">
-              <span className="text-muted-foreground text-xs">Propulsion</span>
-              <span className="font-medium">{vessel.acf.specs.propulsion}</span>
+              <span className="text-muted-foreground text-xs">
+                {t("vessels.card.propulsion")}
+              </span>
+              <span className="font-medium">{propulsionLabel}</span>
             </div>
           )}
         </div>
@@ -103,7 +134,11 @@ export async function VesselCard({ vessel }: { vessel: Vessel }) {
           <p>{category?.name || "Vessel"}</p>
           {vessel.acf.has_asking_price && vessel.acf.asking_price > 0 && (
             <p className="text-primary font-semibold text-sm">
-              {formatPrice(vessel.acf.asking_price, vessel.acf.currency)}
+              {formatCurrency(
+                vessel.acf.asking_price,
+                vessel.acf.currency || "usd",
+                locale
+              )}
             </p>
           )}
         </div>

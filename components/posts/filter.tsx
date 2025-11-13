@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -32,6 +32,12 @@ interface FilterPostsProps {
   selectedAuthor?: string;
   selectedTag?: string;
   selectedCategory?: string;
+  labels: {
+    tags: string;
+    categories: string;
+    authors: string;
+    reset: string;
+  };
 }
 
 export function FilterPosts({
@@ -41,8 +47,10 @@ export function FilterPosts({
   selectedAuthor,
   selectedTag,
   selectedCategory,
+  labels,
 }: FilterPostsProps) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleFilterChange = (type: string, value: string) => {
     console.log(`Filter changed: ${type} -> ${value}`);
@@ -50,11 +58,13 @@ export function FilterPosts({
     newParams.delete("page");
     value === "all" ? newParams.delete(type) : newParams.set(type, value);
 
-    router.push(`/posts?${newParams.toString()}`);
+    router.push(
+      `${pathname}${newParams.toString() ? `?${newParams.toString()}` : ""}`
+    );
   };
 
   const handleResetFilters = () => {
-    router.push("/posts");
+    router.push(pathname);
   };
 
   const hasTags = tags.length > 0;
@@ -68,7 +78,7 @@ export function FilterPosts({
         onValueChange={(value) => handleFilterChange("tag", value)}
       >
         <SelectTrigger disabled={!hasTags}>
-          {hasTags ? <SelectValue placeholder="All Tags" /> : "No tags found"}
+          {hasTags ? <SelectValue placeholder={labels.tags} /> : "No tags found"}
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Tags</SelectItem>
@@ -86,7 +96,7 @@ export function FilterPosts({
       >
         <SelectTrigger disabled={!hasCategories}>
           {hasCategories ? (
-            <SelectValue placeholder="All Categories" />
+            <SelectValue placeholder={labels.categories} />
           ) : (
             "No categories found"
           )}
@@ -107,7 +117,7 @@ export function FilterPosts({
       >
         <SelectTrigger disabled={!hasAuthors} className="text-center">
           {hasAuthors ? (
-            <SelectValue placeholder="All Authors" />
+            <SelectValue placeholder={labels.authors} />
           ) : (
             "No authors found"
           )}
@@ -123,7 +133,7 @@ export function FilterPosts({
       </Select>
 
       <Button variant="outline" onClick={handleResetFilters}>
-        Reset Filters
+        {labels.reset}
       </Button>
     </div>
   );
