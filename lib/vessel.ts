@@ -18,15 +18,22 @@ export const pumpLabels: Record<string, string> = {
   dual: "Dual Pumps",
 };
 
+export const propulsionLabels: Record<string, string> = {
+  conventional_open_wheel: "Conventional (Open Wheel)",
+  conventional_kort_nozzle: "Conventional (Kort Nozzle)",
+  z_drive: "Z-Drive",
+  other: "Other",
+};
+
 export const vaporRecoveryLabels: Record<string, string> = {
-  common_line: "Common Line",
+  "common: Individual PV": "Common / Individual PV",
   individual_pv: "Individual PV",
   none: "No",
 };
 
 export const heatingLabels: Record<string, string> = {
   steam_coils: "Steam Coils",
-  thermal_fluid: "Thermal Fluid",
+  thermal_fuild: "Thermal Fluid",
   none: "No",
 };
 

@@ -22,6 +22,7 @@ import {
   UnitToggle,
   DimensionValue,
 } from "@/components/vessels/unit-toggle";
+import { ExpandableText } from "@/components/vessels/expandable-text";
 
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -38,6 +39,7 @@ import {
   classificationSocietyLabels,
   getSelectLabel,
   heatingLabels,
+  propulsionLabels,
   pumpLabels,
   vaporRecoveryLabels,
   vesselTypeLabels,
@@ -167,6 +169,10 @@ export default async function Page({
     sourceLocale: t(`languageSwitcher.locale.${sourceLocale}`),
     targetLocale: t(`languageSwitcher.locale.${locale}`),
   });
+  const yesLabel = t("common.yes");
+  const noLabel = t("common.no");
+  const showMoreLabel = t("common.showMore");
+  const showLessLabel = t("common.showLess");
 
   // Fetch gallery images
   const galleryImages = vessel.acf.gallery
@@ -200,7 +206,10 @@ export default async function Page({
   const vesselTypeLabel = vesselTypeLabels[vesselTypeKey];
   const bargeTypeLabel = getSelectLabel(vessel.acf.barge_type);
   const conditionLabel = getSelectLabel(vessel.acf.condition);
-  const propulsionLabel = getSelectLabel(propulsionSpecs.propulsion);
+  const propulsionLabel = getSelectLabel(
+    propulsionSpecs.propulsion,
+    propulsionLabels
+  );
   const classificationLabel = coreSpecs.classification_society
     ? classificationSocietyLabels[coreSpecs.classification_society] ??
       coreSpecs.classification_society
@@ -227,11 +236,15 @@ export default async function Page({
   const isBarge = vessel.acf.vessel_type === "barge";
   const totalHorsePower = propulsionSpecs.total_horse_power;
 
-  type SpecRow = { label: string; value: ReactNode };
+  type SpecRow = { label: string; value: ReactNode; fullWidth?: boolean };
   const specRows: SpecRow[] = [];
   const bargeRows: SpecRow[] = [];
 
-  const pushRow = (label: string, value: ReactNode | null | undefined) => {
+  const pushRow = (
+    label: string,
+    value: ReactNode | null | undefined,
+    options?: { fullWidth?: boolean }
+  ) => {
     if (
       value === null ||
       value === undefined ||
@@ -239,7 +252,7 @@ export default async function Page({
     ) {
       return;
     }
-    specRows.push({ label, value });
+    specRows.push({ label, value, fullWidth: options?.fullWidth });
   };
 
   const pushBargeRow = (
@@ -256,8 +269,10 @@ export default async function Page({
     bargeRows.push({ label, value });
   };
 
-  pushRow(t("vessels.detail.table.vesselType"), vesselTypeLabel);
-  if (bargeTypeLabel) {
+  if (vesselTypeLabel) {
+    pushRow(t("vessels.detail.table.vesselType"), vesselTypeLabel);
+  }
+  if (isBarge && bargeTypeLabel) {
     pushRow(t("vessels.detail.table.bargeType"), bargeTypeLabel);
   }
   pushRow(t("vessels.detail.table.yearBuilt"), coreSpecs.year_built);
@@ -267,7 +282,15 @@ export default async function Page({
       `${formatNumber(coreSpecs.deadweight_tons, locale)}`
     );
   }
-  pushRow(t("vessels.detail.table.classificationSociety"), classificationLabel);
+  if (
+    coreSpecs.classification_society &&
+    coreSpecs.classification_society !== "none"
+  ) {
+    pushRow(
+      t("vessels.detail.table.classificationSociety"),
+      classificationLabel
+    );
+  }
   pushRow(
     t("vessels.detail.table.mainEngines"),
     propulsionSpecs.main_engines
@@ -322,13 +345,23 @@ export default async function Page({
   pushRow(t("vessels.detail.table.location"), vessel.acf.location);
   pushRow(t("vessels.detail.table.condition"), conditionLabel);
   pushRow(t("vessels.detail.table.fuelType"), fuelTypeLabel);
-  pushRow(t("vessels.detail.table.fuelNotes"), fuel.notes);
+  if (fuel.notes) {
+    pushRow(
+      t("vessels.detail.table.fuelNotes"),
+      <ExpandableText
+        text={fuel.notes}
+        moreLabel={showMoreLabel}
+        lessLabel={showLessLabel}
+      />,
+      { fullWidth: true }
+    );
+  }
   pushRow(t("vessels.detail.table.bunkering"), fuel.bunkering);
 
   if (bargeTankFields?.regulated_us !== undefined) {
     pushBargeRow(
       t("vessels.detail.table.regulatedUs"),
-      bargeTankFields.regulated_us ? t("common.yes") : t("common.no")
+      bargeTankFields.regulated_us ? yesLabel : noLabel
     );
   }
 
@@ -465,18 +498,24 @@ export default async function Page({
 
           {specRows.length > 0 && (
             <div className="not-prose my-6">
-              <table className="w-full border-collapse">
-                <tbody>
-                  {specRows.map((row) => (
-                    <tr className="border-b" key={row.label}>
-                      <td className="py-3 px-4 bg-muted/30 font-medium text-sm">
-                        {row.label}
-                      </td>
-                      <td className="py-3 px-4">{row.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {specRows.map((row) => (
+                  <div
+                    key={row.label}
+                    className={cn(
+                      "rounded-lg border bg-card/40 p-4 shadow-sm h-full",
+                      row.fullWidth && "md:col-span-2 xl:col-span-3"
+                    )}
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      {row.label}
+                    </p>
+                    <div className="mt-2 text-base leading-relaxed">
+                      {row.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -485,18 +524,21 @@ export default async function Page({
               <h3 className="text-base font-semibold mb-3">
                 {t("vessels.detail.specs.bargeHeading")}
               </h3>
-              <table className="w-full border-collapse">
-                <tbody>
-                  {bargeRows.map((row) => (
-                    <tr className="border-b" key={row.label}>
-                      <td className="py-3 px-4 bg-muted/30 font-medium text-sm">
-                        {row.label}
-                      </td>
-                      <td className="py-3 px-4">{row.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {bargeRows.map((row) => (
+                  <div
+                    key={row.label}
+                    className="rounded-lg border bg-card/40 p-4 shadow-sm h-full"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      {row.label}
+                    </p>
+                    <div className="mt-2 text-base leading-relaxed">
+                      {row.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </Prose>

@@ -117,5 +117,7 @@
   "search.placeholder.vessels": "Search vessels...",
   "search.placeholder.posts": "Search posts...",
   "common.yes": "Yes",
-  "common.no": "No"
+  "common.no": "No",
+  "common.showMore": "Show more",
+  "common.showLess": "Show less"
 }

@@ -117,5 +117,7 @@
   "search.placeholder.vessels": "Buscar embarcaciones...",
   "search.placeholder.posts": "Buscar entradas...",
   "common.yes": "Sí",
-  "common.no": "No"
+  "common.no": "No",
+  "common.showMore": "Ver más",
+  "common.showLess": "Ver menos"
 }

@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { isLocale, Locale, locales, withLocalePath } from "@/i18n/config";
 import { getTranslator, Translator } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/language/language-switcher";
+import Logo from "@/components/icons/logo";
 
 export const metadata: Metadata = {
   title: "Rivers Marine",
@@ -86,8 +87,10 @@ const Nav = ({
         <Link
           className="hover:opacity-75 transition-all flex gap-4 items-center"
           href={withLocalePath(locale, "/")}
+          aria-label={t("site.name")}
+          title={t("site.name")}
         >
-          <h2 className="font-bold text-xl">{t("site.name")}</h2>
+          <Logo variant="primary" darkVariant="white" className="h-14 md:h-16 w-auto" />
         </Link>
         <div className="flex items-center gap-4">
           <LanguageSwitcher

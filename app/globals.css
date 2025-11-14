@@ -40,7 +40,7 @@
     --sidebar-accent-foreground: 216.9231 19.1176% 26.6667%;
     --sidebar-border: 216.0000 12.1951% 83.9216%;
     --sidebar-ring: 197.7600 57.6037% 42.5490%;
-    --font-sans: Rubik, ui-sans-serif, sans-serif, system-ui;
+    --font-sans: RedHatDisplay, ui-sans-serif, sans-serif, system-ui;
     --font-serif: Merriweather, serif;
     --font-mono: JetBrains Mono, monospace;
     --radius: 0.5rem;
@@ -95,7 +95,7 @@
     --sidebar-accent-foreground: 216.0000 12.1951% 83.9216%;
     --sidebar-border: 215 13.7931% 34.1176%;
     --sidebar-ring: 197.8846 57.7778% 64.7059%;
-    --font-sans: Rubik, ui-sans-serif, sans-serif, system-ui;
+    --font-sans: RedHatDisplay, ui-sans-serif, sans-serif, system-ui;
     --font-serif: Merriweather, serif;
     --font-mono: JetBrains Mono, monospace;
     --radius: 0.5rem;

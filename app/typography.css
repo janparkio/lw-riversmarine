@@ -1,36 +1,36 @@
 :root {
-    --rubik-font: var(--font-sans, "Rubik", sans-serif);
+    --redhatdisplay-font: var(--font-sans, "RedHatDisplay", sans-serif);
 }
 
-.rubik-300,
-.rubik-400,
-.rubik-500,
-.rubik-600,
-.rubik-700 {
-    font-family: var(--rubik-font);
+.redhatdisplay-300,
+.redhatdisplay-400,
+.redhatdisplay-500,
+.redhatdisplay-600,
+.redhatdisplay-700 {
+    font-family: var(--redhatdisplay-font);
     font-style: normal;
 }
 
-.rubik-300 {
+.redhatdisplay-300 {
     font-weight: 300;
 }
 
-.rubik-400 {
+.redhatdisplay-400 {
     font-weight: 400;
 }
 
-.rubik-500 {
+.redhatdisplay-500 {
     font-weight: 500;
 }
 
-.rubik-600 {
+.redhatdisplay-600 {
     font-weight: 600;
 }
 
-.rubik-700 {
+.redhatdisplay-700 {
     font-weight: 700;
 }
 
 body {
-    font-family: var(--rubik-font);
+    font-family: var(--redhatdisplay-font);
 }

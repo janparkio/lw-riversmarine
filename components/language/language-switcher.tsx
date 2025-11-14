@@ -76,7 +76,7 @@ export function LanguageSwitcher({
 
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <span className="text-sm font-medium text-muted-foreground">{label}</span>
+      <span className="hidden md:block text-sm font-medium text-muted-foreground">{label}</span>
       <div className="flex gap-1 rounded-full border border-border/60 bg-background/80 p-1">
         {locales.map((locale) => {
           const isActive = locale === currentLocale;
