@@ -210,6 +210,9 @@ export default async function Page({
     propulsionSpecs.propulsion,
     propulsionLabels
   );
+  const askingPrice = vessel.acf.asking_price ?? 0;
+  const showAskingPrice =
+    Boolean(vessel.acf.has_asking_price) && askingPrice > 0;
   const classificationLabel = coreSpecs.classification_society
     ? classificationSocietyLabels[coreSpecs.classification_society] ??
     coreSpecs.classification_society
@@ -473,7 +476,7 @@ export default async function Page({
             </div>
 
             {/* Asking Price */}
-            {vessel.acf.has_asking_price && vessel.acf.asking_price > 0 && (
+            {showAskingPrice && (
               <div className="my-6 p-4 border rounded-lg bg-accent/20">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">
@@ -481,7 +484,7 @@ export default async function Page({
                   </span>
                   <span className="text-2xl font-bold text-primary">
                     {formatCurrency(
-                      vessel.acf.asking_price,
+                      askingPrice,
                       vessel.acf.currency || "usd",
                       locale
                     )}

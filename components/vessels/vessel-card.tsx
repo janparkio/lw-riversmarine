@@ -57,6 +57,9 @@ export async function VesselCard({
   const isBarge = vesselTypeKey === "barge";
   const cargoCapacity = specs.barge_specs?.tank_fields?.cargo_capacity;
   const cargoCapacityParts: string[] = [];
+  const askingPrice = vessel.acf.asking_price ?? 0;
+  const showAskingPrice =
+    Boolean(vessel.acf.has_asking_price) && askingPrice > 0;
 
   if (cargoCapacity?.barrels) {
     cargoCapacityParts.push(
@@ -158,10 +161,10 @@ export async function VesselCard({
         <hr />
         <div className="flex justify-between items-center text-xs">
           {footerLabel ? <p>{footerLabel}</p> : <span />}
-          {vessel.acf.has_asking_price && vessel.acf.asking_price > 0 && (
+          {showAskingPrice && (
             <p className="text-primary font-semibold text-sm">
               {formatCurrency(
-                vessel.acf.asking_price,
+                askingPrice,
                 vessel.acf.currency || "usd",
                 locale
               )}
