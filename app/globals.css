@@ -8,39 +8,39 @@
 
   /* LeadWise Theme Override for riversmarine.net */
   :root {
-    --background: 60.0073 7.0942% 97.9047%;
-    --foreground: 23.9958 9.6112% 9.9910%;
-    --card: 60.0073 7.0942% 97.9047%;
-    --card-foreground: 20.0353 13.8354% 4.1252%;
-    --popover: 60.0073 7.0942% 97.9047%;
-    --popover-foreground: 20.0353 13.8354% 4.1252%;
-    --primary: 199 59.4059% 39.6078%;
+    --background: 0 0% 97.2549%;
+    --foreground: 100 18.1818% 12.9412%;
+    --card: 0 0% 97.2549%;
+    --card-foreground: 212.3810 52.9412% 23.3333%;
+    --popover: 0 0% 97.2549%;
+    --popover-foreground: 100 18.1818% 12.9412%;
+    --primary: 212.3810 52.9412% 23.3333%;
     --primary-foreground: 150 7.6923% 94.9020%;
-    --secondary: 39.6694 48.2072% 49.2157%;
-    --secondary-foreground: 41.2500 53.3333% 94.1176%;
-    --muted: 60.0083 3.6456% 95.9383%;
-    --muted-foreground: 33.3488 6.2756% 32.2417%;
+    --secondary: 35.5556 24.5455% 43.1373%;
+    --secondary-foreground: 26.6667 21.9512% 91.9608%;
+    --muted: 215.0000 24.0000% 90.1961%;
+    --muted-foreground: 213.3333 24.1071% 43.9216%;
     --accent: 220 13.0435% 90.9804%;
-    --accent-foreground: 216.9231 19.1176% 26.6667%;
-    --destructive: 0 84.2365% 60.1961%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 20.0031 6.8725% 89.9826%;
-    --input: 24.0058 6.6869% 82.9784%;
-    --ring: 197.7600 57.6037% 42.5490%;
-    --chart-1: 197.7600 57.6037% 42.5490%;
-    --chart-2: 197.5758 57.8947% 33.5294%;
-    --chart-3: 198.3333 57.1429% 24.7059%;
-    --chart-4: 197.3333 56.9620% 15.4902%;
-    --chart-5: 195.7895 57.5758% 6.4706%;
-    --sidebar: 60.0083 3.6456% 95.9383%;
-    --sidebar-foreground: 217.2414 32.5843% 17.4510%;
-    --sidebar-primary: 197.7600 57.6037% 42.5490%;
-    --sidebar-primary-foreground: 60.0073 7.0942% 97.9047%;
+    --accent-foreground: 212.3810 52.9412% 23.3333%;
+    --destructive: 0 45.4545% 43.1373%;
+    --destructive-foreground: 0 44.8276% 94.3137%;
+    --border: 215.0000 24.0000% 90.1961%;
+    --input: 214.7368 23.4568% 68.2353%;
+    --ring: 212.1951 53.2468% 45.2941%;
+    --chart-1: 212.5424 53.1532% 56.4706%;
+    --chart-2: 212.1951 53.2468% 45.2941%;
+    --chart-3: 212.2581 53.1429% 34.3137%;
+    --chart-4: 212.3810 52.9412% 23.3333%;
+    --chart-5: 212.3077 53.4247% 14.3137%;
+    --sidebar: 214.2857 53.8462% 94.9020%;
+    --sidebar-foreground: 212.3810 52.9412% 23.3333%;
+    --sidebar-primary: 212.1951 53.2468% 45.2941%;
+    --sidebar-primary-foreground: 0 0% 97.2549%;
     --sidebar-accent: 196.9231 56.5217% 86.4706%;
     --sidebar-accent-foreground: 216.9231 19.1176% 26.6667%;
     --sidebar-border: 216.0000 12.1951% 83.9216%;
-    --sidebar-ring: 197.7600 57.6037% 42.5490%;
-    --font-sans: RedHatDisplay, ui-sans-serif, sans-serif, system-ui;
+    --sidebar-ring: 212.1951 53.2468% 45.2941%;
+    --font-sans: Rubik, ui-sans-serif, sans-serif, system-ui;
     --font-serif: Merriweather, serif;
     --font-mono: JetBrains Mono, monospace;
     --radius: 0.5rem;
@@ -63,30 +63,30 @@
   }
 
   .dark {
-    --background: 222.2222 47.3684% 11.1765%;
+    --background: 212 55.5556% 5.2941%;
     --foreground: 214.2857 31.8182% 91.3725%;
     --card: 217.2414 32.5843% 17.4510%;
     --card-foreground: 214.2857 31.8182% 91.3725%;
     --popover: 217.2414 32.5843% 17.4510%;
     --popover-foreground: 214.2857 31.8182% 91.3725%;
-    --primary: 197.8125 62.7451% 60%;
-    --primary-foreground: 198 83.3333% 7.0588%;
-    --secondary: 43.1250 73.5632% 65.8824%;
-    --secondary-foreground: 45 21.4286% 10.9804%;
+    --primary: 213.1034 52.7273% 78.4314%;
+    --primary-foreground: 210 50.0000% 0.7843%;
+    --secondary: 28.8000 17.4825% 71.9608%;
+    --secondary-foreground: 35 25% 18.8235%;
     --muted: 217.2414 32.5843% 17.4510%;
     --muted-foreground: 217.8947 10.6145% 64.9020%;
-    --accent: 214.2857 46.6667% 2.9412%;
+    --accent: 212.3810 52.9412% 23.3333%;
     --accent-foreground: 216.0000 12.1951% 83.9216%;
-    --destructive: 0 84.2365% 60.1961%;
+    --destructive: 0 64.8241% 39.0196%;
     --destructive-foreground: 222.2222 47.3684% 11.1765%;
     --border: 215 13.7931% 34.1176%;
     --input: 215 13.7931% 34.1176%;
     --ring: 197.8846 57.7778% 64.7059%;
-    --chart-1: 198.3333 58.0645% 75.6863%;
-    --chart-2: 197.9562 57.8059% 53.5294%;
-    --chart-3: 197.7600 57.6037% 42.5490%;
-    --chart-4: 198.3333 57.1429% 24.7059%;
-    --chart-5: 197.3333 56.9620% 15.4902%;
+    --chart-1: 212.1951 53.2468% 45.2941%;
+    --chart-2: 212.2581 53.1429% 34.3137%;
+    --chart-3: 212.3810 52.9412% 23.3333%;
+    --chart-4: 212.3077 53.4247% 14.3137%;
+    --chart-5: 212 55.5556% 5.2941%;
     --sidebar: 217.2414 32.5843% 17.4510%;
     --sidebar-foreground: 214.2857 31.8182% 91.3725%;
     --sidebar-primary: 197.8846 57.7778% 64.7059%;
@@ -95,7 +95,7 @@
     --sidebar-accent-foreground: 216.0000 12.1951% 83.9216%;
     --sidebar-border: 215 13.7931% 34.1176%;
     --sidebar-ring: 197.8846 57.7778% 64.7059%;
-    --font-sans: RedHatDisplay, ui-sans-serif, sans-serif, system-ui;
+    --font-sans: Rubik, ui-sans-serif, sans-serif, system-ui;
     --font-serif: Merriweather, serif;
     --font-mono: JetBrains Mono, monospace;
     --radius: 0.5rem;
@@ -186,6 +186,39 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  table {
+    margin: 0;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table th {
+    background-color: hsl(var(--muted));
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: left;
+    vertical-align: top;
+    width: 33.3333%;
+  }
+
+  table td {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid hsl(var(--border));
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 }
 

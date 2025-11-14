@@ -50,7 +50,7 @@ const Hero = ({ t }: { t: Translator }) => {
             <Reveal as="span" className="inline-flex items-center rounded-full bg-accent/50 text-accent-foreground px-2 py-0.5 text-base font-medium ring-1 ring-accent-foreground/10">
               {t("home.hero.badge")}
             </Reveal>
-            <Reveal as="h2" className="mt-4 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            <Reveal as="h2" className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
               {t("home.hero.title")}
             </Reveal>
             <Reveal as="p" className="mt-4 text-xl font-medium text-pretty text-muted-foreground sm:text-3xl">
@@ -88,7 +88,7 @@ const Feature = ({ locale, t }: { locale: Locale; t: Translator }) => {
         <div className="relative mx-auto grid grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:items-center justify-between">
           <div className="lg:pt-4 md:col-span-4 lg:col-span-3">
             <div className="lg:max-w-2xl">
-              <Reveal as="p" className="mt-2 text-pretty font-semibold tracking-tight text-xl sm:text-2xl">
+              <Reveal as="p" className="mt-2 text-pretty font-bold tracking-tight text-xl sm:text-2xl">
                 {t("home.features.heading")}
               </Reveal>
               <Reveal as="p" className="mt-2 text-lg/8 text-muted-foreground">
@@ -104,7 +104,7 @@ const Feature = ({ locale, t }: { locale: Locale; t: Translator }) => {
                   >
                     {feature.variant === 'stat' ? (
                       <div>
-                        <div className="text-4xl text-pretty sm:text-5xl font-semibold leading-none text-secondary">
+                        <div className="text-4xl text-pretty sm:text-5xl font-bold leading-none text-secondary">
                           {feature.stat}
                         </div>
                         <p className="mt-3 text-base text-base">
@@ -113,7 +113,7 @@ const Feature = ({ locale, t }: { locale: Locale; t: Translator }) => {
                       </div>
                     ) : (
                       <div>
-                        <p className="text-2xl text-pretty sm:text-xl font-semibold text-secondary">
+                        <p className="text-2xl text-pretty sm:text-xl font-bold text-secondary">
                           {feature.heading}
                         </p>
                         <div className="mt-3 space-y-1 text-base">
@@ -130,7 +130,7 @@ const Feature = ({ locale, t }: { locale: Locale; t: Translator }) => {
               </div>
             </div>
           </div>
-          <div className="relative -mt-48 md:col-span-1 lg:-mt-64 lg:-ml-32 xl:-ml-56 group">
+          <div className="relative -mt-48 md:col-span-1 lg:-mt-64 lg:-ml-32 xl:-ml-56 group overflow-hidden">
             <div className="relative transition-transform duration-500 ease-out hover:scale-105 drop-shadow-2xl">
 
               {/* Bottom water wave - behind the boat */}
@@ -203,7 +203,7 @@ const About = ({ t }: { t: Translator }) => {
           />
           <Reveal as="p" delay={600} className="text-base text-pretty sm:text-lg text-muted-foreground max-w-lg">
             {t("home.about.body.prefix")}
-            <span className="ml-1 font-semibold italic text-foreground">{highlight}</span>
+            <span className="ml-1 font-bold italic text-foreground">{highlight}</span>
             {t("home.about.body.suffix")}
           </Reveal>
         </div>
