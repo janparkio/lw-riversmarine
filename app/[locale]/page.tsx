@@ -31,7 +31,7 @@ export default async function Home({
     <>
       <LanguageAlternatesScript alternates={alternates} activeLocale={locale} />
       <Section>
-        <Container>
+        <Container className="overflow-hidden md:overflow-visible">
           <Hero t={t} />
           <Feature locale={locale} t={t} />
           <About t={t} />
@@ -130,7 +130,7 @@ const Feature = ({ locale, t }: { locale: Locale; t: Translator }) => {
               </div>
             </div>
           </div>
-          <div className="relative -mt-48 md:col-span-1 lg:-mt-64 lg:-ml-32 xl:-ml-56 group overflow-hidden">
+          <div className="relative -mt-48 md:col-span-1 lg:-mt-64 lg:-ml-32 xl:-ml-56 group">
             <div className="relative transition-transform duration-500 ease-out hover:scale-105 drop-shadow-2xl">
 
               {/* Bottom water wave - behind the boat */}

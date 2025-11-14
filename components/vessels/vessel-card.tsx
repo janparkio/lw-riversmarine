@@ -6,7 +6,11 @@ import { cn } from "@/lib/utils";
 import { Locale, withLocalePath } from "@/i18n/config";
 import { formatCurrency, formatNumber } from "@/lib/format";
 import { getTranslator } from "@/lib/i18n";
-import { vesselTypeLabels, getSelectLabel } from "@/lib/vessel";
+import {
+  vesselTypeLabels,
+  getSelectLabel,
+  propulsionLabels,
+} from "@/lib/vessel";
 
 import { getFeaturedMediaById, getCategoryById } from "@/lib/wordpress";
 
@@ -26,7 +30,10 @@ export async function VesselCard({
   const vesselTypeKey = (vessel.acf?.vessel_type ?? "towboat") as VesselType;
   const vesselType = vesselTypeLabels[vesselTypeKey] ?? null;
   const bargeTypeLabel = getSelectLabel(vessel.acf?.barge_type);
-  const propulsionLabel = getSelectLabel(propulsionSpecs.propulsion);
+  const propulsionLabel = getSelectLabel(
+    propulsionSpecs.propulsion,
+    propulsionLabels
+  );
   const media = vessel.featured_media
     ? await getFeaturedMediaById(vessel.featured_media, locale)
     : null;
@@ -47,6 +54,25 @@ export async function VesselCard({
     : formattedBeam || "—";
   const yearBuilt = coreSpecs.year_built ?? "—";
   const totalHorsePower = propulsionSpecs.total_horse_power;
+  const isBarge = vesselTypeKey === "barge";
+  const cargoCapacity = specs.barge_specs?.tank_fields?.cargo_capacity;
+  const cargoCapacityParts: string[] = [];
+
+  if (cargoCapacity?.barrels) {
+    cargoCapacityParts.push(
+      `${formatNumber(cargoCapacity.barrels, locale)} bbl`
+    );
+  }
+  if (cargoCapacity?.m3_metric_tons) {
+    cargoCapacityParts.push(cargoCapacity.m3_metric_tons);
+  }
+
+  const footerLabel =
+    (isBarge && cargoCapacityParts.length > 0
+      ? `${t("vessels.detail.table.cargoCapacity")}: ${cargoCapacityParts.join(
+        " • "
+      )}`
+      : category?.name || vesselType || "") || null;
 
   return (
     <Link
@@ -80,10 +106,10 @@ export async function VesselCard({
           className="text-xl text-primary font-medium group-hover:underline decoration-muted-foreground underline-offset-4 decoration-dotted transition-all"
         ></div>
 
-        {(vesselType || bargeTypeLabel) && (
+        {(vesselType || (isBarge && bargeTypeLabel)) && (
           <div className="text-sm text-muted-foreground flex flex-wrap gap-2">
             {vesselType && <span>{vesselType}</span>}
-            {bargeTypeLabel && <span>• {bargeTypeLabel}</span>}
+            {isBarge && bargeTypeLabel && <span>• {bargeTypeLabel}</span>}
           </div>
         )}
 
@@ -117,7 +143,7 @@ export async function VesselCard({
             <span className="font-medium">{dimensionsText}</span>
           </div>
 
-          {propulsionLabel && (
+          {!isBarge && propulsionLabel && (
             <div className="flex flex-col">
               <span className="text-muted-foreground text-xs">
                 {t("vessels.card.propulsion")}
@@ -131,7 +157,7 @@ export async function VesselCard({
       <div className="flex flex-col gap-4">
         <hr />
         <div className="flex justify-between items-center text-xs">
-          <p>{category?.name || "Vessel"}</p>
+          {footerLabel ? <p>{footerLabel}</p> : <span />}
           {vessel.acf.has_asking_price && vessel.acf.asking_price > 0 && (
             <p className="text-primary font-semibold text-sm">
               {formatCurrency(
