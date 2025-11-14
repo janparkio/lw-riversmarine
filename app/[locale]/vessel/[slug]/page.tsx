@@ -418,7 +418,7 @@ export default async function Page({
               className="mb-6"
             />
           )}
-          <Prose disableTables>
+          <Prose>
             <h1>
               <Balancer>
                 <span
