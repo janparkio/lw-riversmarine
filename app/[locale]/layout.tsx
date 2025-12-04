@@ -45,11 +45,12 @@ export default async function LocaleLayout({
   params,
 }: LocaleLayoutProps) {
   const { locale: localeParam } = await params;
-  const locale = isLocale(localeParam) ? localeParam : null;
 
-  if (!locale) {
+  if (!isLocale(localeParam)) {
     notFound();
   }
+
+  const locale = localeParam as Locale;
 
   const t = await getTranslator(locale);
   const [primaryWordPressMenu, contentWordPressMenu] = await Promise.all([
