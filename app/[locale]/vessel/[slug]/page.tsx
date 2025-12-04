@@ -659,11 +659,11 @@ export default async function Page({
                 <Button size="lg" variant="default" asChild>
                   <a href="tel:+1234567890">{t("vessels.detail.contact.callUs")}</a>
                 </Button>
-                <Button size="lg" variant="outline" asChild>
+                {/* <Button size="lg" variant="outline" asChild>
                   <Link href={withLocalePath(locale, "/contact")}>
                     {t("vessels.detail.contact.contactPage")}
                   </Link>
-                </Button>
+                </Button> */}
               </div>
             </div>
 
@@ -692,6 +692,7 @@ export default async function Page({
                 }}
                 messages={{
                   success: t("vessels.detail.form.success"),
+                  received: t("vessels.detail.form.received"),
                   submit: t("vessels.detail.form.submit"),
                   sending: t("vessels.detail.form.sending"),
                   error: t("vessels.detail.form.error"),
@@ -743,8 +744,7 @@ export default async function Page({
 
                   if (adjacentDims.length) {
                     adjacentMeta.push(
-                      `${adjacentDims.length} ${
-                        adjacentCore.length_unit || "ft"
+                      `${adjacentDims.length} ${adjacentCore.length_unit || "ft"
                       }`
                     );
                   }

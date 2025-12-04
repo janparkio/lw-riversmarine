@@ -234,6 +234,17 @@ export interface Author {
   meta: Record<string, unknown>;
 }
 
+export interface MenuItem {
+  id: string;
+  label: string;
+  href: string;
+  target?: string | null;
+  rel?: string | null;
+  order: number;
+  parentId?: string | null;
+  children: MenuItem[];
+}
+
 // Block types
 interface BlockSupports {
   align?: boolean | string[];
@@ -349,6 +360,7 @@ export interface ContactFormSubmissionPayload {
   phone?: string;
   vesselTitle?: string;
   pageUrl?: string;
+  locale?: string;
 }
 
 export interface ContactFormInvalidField {
@@ -363,4 +375,11 @@ export interface ContactFormSubmissionResponse {
   message: string;
   posted_data_hash?: string;
   invalid_fields?: ContactFormInvalidField[];
+}
+
+export interface ContactFormDetails {
+  id: number;
+  title: string;
+  locale: string;
+  version?: string;
 }

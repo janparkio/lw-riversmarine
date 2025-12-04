@@ -3,7 +3,7 @@
 // Types are imported from `wp.d.ts`
 
 import querystring from "query-string";
-import { defaultLocale, Locale } from "@/i18n/config";
+import { defaultLocale, Locale, localeMap } from "@/i18n/config";
 import type {
   Post,
   Category,
@@ -12,8 +12,10 @@ import type {
   Author,
   FeaturedMedia,
   Vessel,
+  MenuItem,
   ContactFormSubmissionPayload,
   ContactFormSubmissionResponse,
+  ContactFormDetails,
 } from "./wordpress.d";
 
 const baseUrl = process.env.WORDPRESS_URL;
@@ -58,6 +60,39 @@ class WordPressAPIError extends Error {
   constructor(message: string, public status: number, public endpoint: string) {
     super(message);
     this.name = "WordPressAPIError";
+  }
+}
+
+const contactFormDetailsCache = new Map<string, ContactFormDetails>();
+
+async function getContactFormDetails(
+  formId: string
+): Promise<ContactFormDetails | null> {
+  if (contactFormDetailsCache.has(formId)) {
+    return contactFormDetailsCache.get(formId)!;
+  }
+
+  try {
+    const response = await fetch(
+      `${baseUrl}/wp-json/contact-form-7/v1/contact-forms/${formId}`,
+      {
+        cache: "no-store",
+        headers: {
+          "User-Agent": "Next.js WordPress Client",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = (await response.json()) as ContactFormDetails;
+    contactFormDetailsCache.set(formId, data);
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch Contact Form 7 details:", error);
+    return null;
   }
 }
 
@@ -748,12 +783,244 @@ export async function getVesselsByCategoryPaginated(
   );
 }
 
+// ============================================================================
+// Menu Functions
+// ============================================================================
+
+type MenuApiResponse = {
+  items?: MenuApiItem[];
+} | MenuApiItem[] | null;
+
+type MenuApiItem = {
+  id?: number | string;
+  ID?: number | string;
+  object_id?: number | string;
+  parent?: number | string | null;
+  menu_item_parent?: number | string | null;
+  menu_order?: number | string | null;
+  title?:
+    | string
+    | null
+    | {
+        rendered?: string | null;
+      };
+  name?: string | null;
+  url?: string | null;
+  target?: string | null;
+  xfn?: string[] | string | null;
+  child_items?: MenuApiItem[] | null;
+  children?: MenuApiItem[] | null;
+};
+
+const menuEndpointBuilders: Array<(location: string) => string> = [
+  (location: string) => `/wp-json/wp-api-menus/v2/menu-locations/${location}`,
+  (location: string) => `/wp-json/menus/v1/menus/${location}`,
+];
+
+let menuItemIdCounter = 0;
+
+export async function getMenuByLocation(
+  location: string,
+  locale: Locale = defaultLocale
+): Promise<MenuItem[] | null> {
+  const cacheTags = ["wordpress", "menus", `menu-${location}`];
+
+  for (const buildPath of menuEndpointBuilders) {
+    try {
+      const response = await wordpressFetch<MenuApiResponse>(
+        buildPath(location),
+        undefined,
+        {
+          locale,
+          cacheTags,
+        }
+      );
+
+      const normalized = normalizeMenuResponse(response);
+      if (normalized.length) {
+        return normalized;
+      }
+    } catch (error) {
+      console.warn(
+        `Failed to load WordPress menu for location "${location}" via ${buildPath(
+          location
+        )}: ${(error as Error).message}`
+      );
+    }
+  }
+
+  return null;
+}
+
+function normalizeMenuResponse(response: MenuApiResponse): MenuItem[] {
+  menuItemIdCounter = 0;
+
+  if (!response) {
+    return [];
+  }
+
+  const items = Array.isArray(response)
+    ? response
+    : Array.isArray(response.items)
+      ? response.items
+      : [];
+
+  if (!items.length) {
+    return [];
+  }
+
+  const flatItems = flattenMenuItems(items);
+  return buildMenuTree(flatItems);
+}
+
+type FlatMenuItem = Omit<MenuItem, "children">;
+
+function flattenMenuItems(
+  items: MenuApiItem[],
+  parentId: string | null = null
+): FlatMenuItem[] {
+  const flat: FlatMenuItem[] = [];
+
+  items.forEach((item, index) => {
+    const normalized = normalizeMenuItem(item, parentId, index);
+    flat.push(normalized);
+
+    const nested =
+      Array.isArray(item.child_items) && item.child_items.length
+        ? item.child_items
+        : Array.isArray(item.children)
+          ? item.children
+          : [];
+
+    if (nested.length) {
+      flat.push(...flattenMenuItems(nested, normalized.id));
+    }
+  });
+
+  return flat;
+}
+
+function normalizeMenuItem(
+  item: MenuApiItem,
+  explicitParentId: string | null,
+  fallbackOrder: number
+): FlatMenuItem {
+  const id = coerceMenuItemId(item.id ?? item.ID ?? item.object_id);
+  const parentId =
+    explicitParentId ??
+    coerceParentId(item.menu_item_parent ?? item.parent);
+  const order =
+    coerceToNumber(item.menu_order) ?? Math.max(fallbackOrder, 0) ?? 0;
+
+  const labelSource =
+    typeof item.title === "string"
+      ? item.title
+      : item.title?.rendered ?? item.name ?? "";
+
+  const label = stripHtml(labelSource).trim() || "Menu Item";
+  const href = (item.url ?? "").trim() || "/";
+  const rel =
+    Array.isArray(item.xfn) && item.xfn.length
+      ? item.xfn.filter(Boolean).join(" ")
+      : typeof item.xfn === "string"
+        ? item.xfn
+        : null;
+  const target =
+    typeof item.target === "string" && item.target.trim().length
+      ? item.target
+      : null;
+
+  return {
+    id,
+    parentId,
+    order,
+    label,
+    href,
+    target,
+    rel,
+  };
+}
+
+function coerceMenuItemId(value: number | string | undefined): string {
+  if (typeof value === "number" || (typeof value === "string" && value)) {
+    return String(value);
+  }
+
+  menuItemIdCounter += 1;
+  return `menu-item-${menuItemIdCounter}`;
+}
+
+function coerceParentId(
+  value: number | string | null | undefined
+): string | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const normalized = String(value);
+  return normalized === "0" || normalized === "" ? null : normalized;
+}
+
+function coerceToNumber(value: number | string | null | undefined): number | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
+function buildMenuTree(items: FlatMenuItem[]): MenuItem[] {
+  const lookup = new Map<string, MenuItem>();
+  const roots: MenuItem[] = [];
+
+  items.forEach((item) => {
+    lookup.set(item.id, { ...item, children: [] });
+  });
+
+  lookup.forEach((item) => {
+    if (item.parentId && lookup.has(item.parentId)) {
+      lookup.get(item.parentId)!.children.push(item);
+    } else {
+      roots.push(item);
+    }
+  });
+
+  return sortMenuItems(roots);
+}
+
+function sortMenuItems(items: MenuItem[]): MenuItem[] {
+  return items
+    .sort((a, b) => a.order - b.order)
+    .map((item) => ({
+      ...item,
+      children: item.children.length ? sortMenuItems(item.children) : [],
+    }));
+}
+
+function stripHtml(value: string): string {
+  return value.replace(/<[^>]*>/g, "");
+}
+
 export async function submitContactForm(
   formId: string,
   payload: ContactFormSubmissionPayload
 ): Promise<ContactFormSubmissionResponse> {
   const url = `${baseUrl}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`;
   const formData = new FormData();
+  const details = await getContactFormDetails(formId);
+  const fallbackLocale =
+    localeMap[defaultLocale]?.replace("-", "_") || "en_US";
+  const locale = payload.locale || details?.locale || fallbackLocale;
+  const version = details?.version || "";
+  const unitTag = `wpcf7-f${formId}-p0-o1`;
+
+  formData.append("_wpcf7", formId);
+  formData.append("_wpcf7_version", version);
+  formData.append("_wpcf7_locale", locale);
+  formData.append("_wpcf7_unit_tag", unitTag);
+  formData.append("_wpcf7_container_post", "0");
+  formData.append("_wpcf7_posted_data_hash", "");
 
   formData.append("name", payload.name);
   formData.append("email", payload.email);
@@ -780,15 +1047,30 @@ export async function submitContactForm(
     cache: "no-store",
   });
 
+  let data: ContactFormSubmissionResponse | Record<string, any> | null = null;
+  try {
+    data = await response.json();
+  } catch {
+    // ignore JSON parse errors to preserve original response
+  }
+
   if (!response.ok) {
-    throw new WordPressAPIError(
-      `WordPress API request failed: ${response.statusText}`,
+    const error = new WordPressAPIError(
+      (data as ContactFormSubmissionResponse | undefined)?.message ||
+        `WordPress API request failed: ${response.statusText}`,
       response.status,
       url
     );
+
+    (error as WordPressAPIError & { details?: unknown }).details = data;
+    throw error;
   }
 
-  return response.json();
+  return (data as ContactFormSubmissionResponse) || {
+    into: "",
+    message: "Unknown response from WordPress.",
+    status: "unknown",
+  };
 }
 
 export { WordPressAPIError };

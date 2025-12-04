@@ -14,8 +14,15 @@ import { cn } from "@/lib/utils";
 
 import { isLocale, Locale, locales, withLocalePath } from "@/i18n/config";
 import { getTranslator, Translator } from "@/lib/i18n";
+import { getMenuByLocation } from "@/lib/wordpress";
+import {
+  buildFallbackMenuLinks,
+  resolveMenuLinks,
+  type NavigationLink,
+} from "@/lib/navigation";
 import { LanguageSwitcher } from "@/components/language/language-switcher";
 import Logo from "@/components/icons/logo";
+import { MobileNav } from "@/components/nav/mobile-nav";
 
 export const metadata: Metadata = {
   title: "Rivers Marine",
@@ -45,6 +52,26 @@ export default async function LocaleLayout({
   }
 
   const t = await getTranslator(locale);
+  const [primaryWordPressMenu, contentWordPressMenu] = await Promise.all([
+    getMenuByLocation("primary", locale),
+    getMenuByLocation("content", locale),
+  ]);
+
+  const primaryMenu = resolveMenuLinks(primaryWordPressMenu, locale);
+  const contentMenu = resolveMenuLinks(contentWordPressMenu, locale);
+
+  const fallbackPrimary = buildFallbackMenuLinks("primary", locale, t);
+  const fallbackContent = buildFallbackMenuLinks("content", locale, t);
+
+  const primaryNavLinks =
+    primaryMenu.length > 0 ? primaryMenu : fallbackPrimary;
+  const contentNavLinks =
+    contentMenu.length > 0 ? contentMenu : fallbackContent;
+
+  const navLabels = {
+    primary: t("nav.menu"),
+    content: t("nav.blogMenu"),
+  };
 
   return (
     <>
@@ -55,7 +82,13 @@ export default async function LocaleLayout({
         enableSystem
         disableTransitionOnChange
       >
-        <Nav locale={locale} t={t} />
+        <Nav
+          locale={locale}
+          t={t}
+          primaryMenu={primaryNavLinks}
+          contentMenu={contentNavLinks}
+          menuLabels={navLabels}
+        />
         {children}
         <Footer locale={locale} t={t} />
       </ThemeProvider>
@@ -70,11 +103,21 @@ export function generateStaticParams() {
 
 const Nav = ({
   className,
-  children,
   id,
   locale,
   t,
-}: NavProps & { locale: Locale; t: Translator }) => {
+  primaryMenu,
+  contentMenu,
+  menuLabels,
+}: NavProps & {
+  locale: Locale;
+  t: Translator;
+  primaryMenu: NavigationLink[];
+  contentMenu: NavigationLink[];
+  menuLabels: { primary: string; content: string };
+}) => {
+  const brandHref = withLocalePath(locale, "/");
+
   return (
     <nav
       className={cn("sticky z-50 top-0 bg-background/20 backdrop-blur-sm", "border-b", className)}
@@ -93,15 +136,65 @@ const Nav = ({
           <Logo variant="primary" darkVariant="white" className="h-14 md:h-16 w-auto" />
         </Link>
         <div className="flex items-center gap-4">
+          <DesktopNav items={primaryMenu} />
           <LanguageSwitcher
             currentLocale={locale}
             label={t("languageSwitcher.label")}
             unavailableLabel={t("languageSwitcher.unavailable")}
           />
-          {children}
+          <MobileNav
+            brand={{ href: brandHref, label: siteConfig.site_name }}
+            menus={[
+              { label: menuLabels.primary, items: primaryMenu },
+              { label: menuLabels.content, items: contentMenu },
+            ]}
+          />
         </div>
       </div>
     </nav>
+  );
+};
+
+const DesktopNav = ({ items }: { items: NavigationLink[] }) => {
+  if (!items.length) {
+    return null;
+  }
+
+  return (
+    <div className="hidden md:flex items-center gap-6">
+      {items.map((item) => (
+        <NavLinkItem key={item.id} item={item} />
+      ))}
+    </div>
+  );
+};
+
+const NavLinkItem = ({ item }: { item: NavigationLink }) => {
+  const target = item.target ?? (item.external ? "_blank" : undefined);
+  const rel = item.rel ?? (item.external ? "noreferrer" : undefined);
+
+  if (item.external) {
+    return (
+      <a
+        href={item.href}
+        className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+        target={target}
+        rel={rel ?? undefined}
+      >
+        {item.label}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      href={item.href}
+      className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+      target={target}
+      rel={rel ?? undefined}
+    >
+      {item.label}
+    </Link>
   );
 };
 

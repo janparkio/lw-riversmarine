@@ -19,6 +19,7 @@ interface ContactFormCopy {
 
 interface ContactFormMessages {
   success: string;
+  received: string;
   submit: string;
   sending: string;
   error: string;
@@ -43,6 +44,7 @@ const defaultCopy: ContactFormCopy = {
 
 const defaultMessages: ContactFormMessages = {
   success: "Thank you for your inquiry! We will contact you shortly.",
+  received: "Thank you! We've received your request.",
   submit: "Send Inquiry",
   sending: "Sending...",
   error: "We couldn't send your request. Please try again.",
@@ -103,10 +105,15 @@ export function ContactForm({
         );
       }
 
+      const cf7Status = payload?.cf7Status;
+      const successCopy =
+        cf7Status && cf7Status !== "mail_sent"
+          ? mergedMessages.received
+          : mergedMessages.success;
+
       setStatusMessage({
         type: "success",
-        text:
-          payload?.message || mergedMessages.success,
+        text: successCopy,
       });
 
       setFormData({

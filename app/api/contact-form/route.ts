@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import {
   submitContactForm,
   type ContactFormSubmissionPayload,
+  type ContactFormSubmissionResponse,
+  WordPressAPIError,
 } from "@/lib/wordpress";
 
 const CONTACT_FORM_ID = process.env.WORDPRESS_CONTACT_FORM_ID;
@@ -65,28 +67,64 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await submitContactForm(CONTACT_FORM_ID, payload);
+    const cf7Response = await submitContactForm(CONTACT_FORM_ID, payload);
 
-    if (response.status === "mail_sent") {
-      return NextResponse.json({
-        message: response.message || "Your inquiry has been sent.",
-      });
+    if (cf7Response.status === "validation_failed") {
+      return NextResponse.json(
+        {
+          message:
+            cf7Response.message ||
+            "We couldn't process your request. Please check the highlighted fields.",
+          details: cf7Response.invalid_fields,
+        },
+        { status: 422 }
+      );
     }
 
-    const status =
-      response.status === "validation_failed" ? 422 : 400;
+    if (cf7Response.status === "spam" || cf7Response.status === "aborted") {
+      return NextResponse.json(
+        {
+          message:
+            cf7Response.message ||
+            "We couldn't process your request. Please try again later.",
+        },
+        { status: 400 }
+      );
+    }
 
-    return NextResponse.json(
-      {
-        message:
-          response.message ||
-          "We couldn't process your request. Please check the form and try again.",
-        details: response.invalid_fields,
-      },
-      { status }
-    );
+    const message =
+      cf7Response.status === "mail_sent"
+        ? cf7Response.message || "Your inquiry has been sent."
+        : "Thank you! We've received your request.";
+
+    if (cf7Response.status !== "mail_sent") {
+      console.warn(
+        `Contact form sent but WordPress reported status "${cf7Response.status}".`
+      );
+    }
+
+    return NextResponse.json({
+      message,
+      cf7Status: cf7Response.status,
+    });
   } catch (error) {
     console.error("Contact form submission failed:", error);
+
+    if (error instanceof WordPressAPIError) {
+      const details = (error as WordPressAPIError & { details?: unknown })
+        .details as ContactFormSubmissionResponse | undefined;
+
+      return NextResponse.json(
+        {
+          message:
+            error.message ||
+            "We couldn't process your request. Please try again.",
+          details: details?.invalid_fields,
+        },
+        { status: error.status || 400 }
+      );
+    }
+
     return NextResponse.json(
       {
         message: "Unable to submit your request right now. Please try again later.",

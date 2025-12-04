@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { contentType, contentId } = requestBody;
+    const { contentType, contentId, menuLocation } = requestBody;
 
     if (!contentType) {
       return NextResponse.json(
@@ -72,6 +72,11 @@ export async function POST(request: NextRequest) {
         revalidateTag("vessels-page-1");
         if (contentId) {
           revalidateTag(`vessel-${contentId}`);
+        }
+      } else if (contentType === "menu") {
+        revalidateTag("menus");
+        if (menuLocation) {
+          revalidateTag(`menu-${menuLocation}`);
         }
       }
 

@@ -1,15 +1,12 @@
 "use client";
 
-// React and Next Imports
 import * as React from "react";
-import Link, { LinkProps } from "next/link";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-// Utility Imports
 import { Menu, ArrowRightSquare } from "lucide-react";
-import { cn } from "@/lib/utils";
 
-// Component Imports
+import { cn } from "@/lib/utils";
+import type { NavigationLink } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -21,11 +18,20 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 
-import { mainMenu, contentMenu } from "@/menu.config";
-import { siteConfig } from "@/site.config";
+type MobileNavProps = {
+  brand: {
+    href: string;
+    label: string;
+  };
+  menus: Array<{
+    label: string;
+    items: NavigationLink[];
+  }>;
+};
 
-export function MobileNav() {
+export function MobileNav({ brand, menus }: MobileNavProps) {
   const [open, setOpen] = React.useState(false);
+  const visibleMenus = menus.filter((menu) => menu.items.length);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -41,31 +47,40 @@ export function MobileNav() {
       <SheetContent side="left" className="pr-0">
         <SheetHeader>
           <SheetTitle className="text-left">
-            <MobileLink
-              href="/"
+            <MobileNavLink
+              link={{
+                id: "brand",
+                label: brand.label,
+                href: brand.href,
+                external: false,
+              }}
               className="flex items-center"
-              onOpenChange={setOpen}
+              onNavigate={() => setOpen(false)}
             >
               <ArrowRightSquare className="mr-2 h-4 w-4" />
-              <span>{siteConfig.site_name}</span>
-            </MobileLink>
+              <span>{brand.label}</span>
+            </MobileNavLink>
           </SheetTitle>
         </SheetHeader>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
-          <div className="flex flex-col space-y-3">
-            <h3 className="text-small mt-6">Menu</h3>
-            <Separator />
-            {Object.entries(mainMenu).map(([key, href]) => (
-              <MobileLink key={key} href={href} onOpenChange={setOpen}>
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </MobileLink>
-            ))}
-            <h3 className="text-small pt-6">Blog Menu</h3>
-            <Separator />
-            {Object.entries(contentMenu).map(([key, href]) => (
-              <MobileLink key={key} href={href} onOpenChange={setOpen}>
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </MobileLink>
+          <div className="flex flex-col space-y-6">
+            {visibleMenus.map((menu, index) => (
+              <div key={menu.label} className="flex flex-col space-y-3">
+                <h3 className={cn("text-small", index === 0 ? "mt-6" : "pt-2")}>
+                  {menu.label}
+                </h3>
+                <Separator />
+                {menu.items.map((item) => (
+                  <MobileNavLink
+                    key={item.id}
+                    link={item}
+                    className="text-lg"
+                    onNavigate={() => setOpen(false)}
+                  >
+                    {item.label}
+                  </MobileNavLink>
+                ))}
+              </div>
             ))}
           </div>
         </ScrollArea>
@@ -74,29 +89,46 @@ export function MobileNav() {
   );
 }
 
-interface MobileLinkProps extends LinkProps {
-  onOpenChange?: (open: boolean) => void;
+type MobileNavLinkProps = {
+  link: NavigationLink;
   children: React.ReactNode;
   className?: string;
-}
+  onNavigate?: () => void;
+};
 
-function MobileLink({
-  href,
-  onOpenChange,
-  className,
+function MobileNavLink({
+  link,
   children,
-  ...props
-}: MobileLinkProps) {
+  className,
+  onNavigate,
+}: MobileNavLinkProps) {
   const router = useRouter();
+
+  if (link.external) {
+    return (
+      <a
+        href={link.href}
+        target={link.target ?? "_blank"}
+        rel={link.rel ?? "noreferrer"}
+        className={cn("text-lg", className)}
+        onClick={() => onNavigate?.()}
+      >
+        {children}
+      </a>
+    );
+  }
+
   return (
     <Link
-      href={href}
-      onClick={() => {
-        router.push(href.toString());
-        onOpenChange?.(false);
-      }}
+      href={link.href}
+      target={link.target ?? undefined}
+      rel={link.rel ?? undefined}
       className={cn("text-lg", className)}
-      {...props}
+      onClick={(event) => {
+        event.preventDefault();
+        router.push(link.href.toString());
+        onNavigate?.();
+      }}
     >
       {children}
     </Link>
