@@ -146,7 +146,7 @@ const Nav = ({
             brand={{ href: brandHref, label: siteConfig.site_name }}
             menus={[
               { label: menuLabels.primary, items: primaryMenu },
-              { label: menuLabels.content, items: contentMenu },
+              // { label: menuLabels.content, items: contentMenu },
             ]}
           />
         </div>

@@ -3,8 +3,17 @@ import "./globals.css";
 import { cookies } from "next/headers";
 import localFont from "next/font/local";
 
+
+import type { Metadata } from "next";
+
 import { cn } from "@/lib/utils";
 import { defaultLocale, isLocale } from "@/i18n/config";
+
+export const metadata: Metadata = {
+  appleWebApp: {
+    title: "RMarine",
+  },
+};
 
 const font = localFont({
   src: [
