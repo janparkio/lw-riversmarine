@@ -1,15 +1,41 @@
 import { NextResponse } from "next/server";
 import {
   submitContactForm,
+  getContactFormBySlug,
   type ContactFormSubmissionPayload,
   type ContactFormSubmissionResponse,
   WordPressAPIError,
 } from "@/lib/wordpress";
+import formsConfig from "@/config/forms.json";
 
-const CONTACT_FORM_ID = process.env.WORDPRESS_CONTACT_FORM_ID;
+// Fall back to env var for backwards compatibility
+const LEGACY_CONTACT_FORM_ID = process.env.WORDPRESS_CONTACT_FORM_ID;
+
+async function getVesselInquiryFormId(): Promise<string | null> {
+  const config = formsConfig.vesselInquiry;
+
+  // 1. Try to get form by slug from WordPress API (most flexible)
+  if (config?.slug) {
+    const form = await getContactFormBySlug(config.slug);
+    if (form) {
+      return String(form.id);
+    }
+    console.warn(`Contact form with slug "${config.slug}" not found in WordPress`);
+  }
+
+  // 2. Fall back to formId in config (stable)
+  if (config?.formId) {
+    return config.formId;
+  }
+
+  // 3. Fall back to legacy env var
+  return LEGACY_CONTACT_FORM_ID || null;
+}
 
 export async function POST(request: Request) {
-  if (!CONTACT_FORM_ID) {
+  const formId = await getVesselInquiryFormId();
+
+  if (!formId) {
     return NextResponse.json(
       { message: "Contact form is not configured." },
       { status: 500 }
@@ -67,7 +93,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const cf7Response = await submitContactForm(CONTACT_FORM_ID, payload);
+    const cf7Response = await submitContactForm(formId, payload);
 
     if (cf7Response.status === "validation_failed") {
       return NextResponse.json(

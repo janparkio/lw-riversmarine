@@ -1,0 +1,7 @@
+{
+    "vesselInquiry": {
+        "slug": "vessel-inquiry",
+        "formId": "91",
+        "description": "Contact form for vessel inquiries - used on individual vessel pages"
+    }
+}

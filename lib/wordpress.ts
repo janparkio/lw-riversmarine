@@ -16,6 +16,7 @@ import type {
   ContactFormSubmissionPayload,
   ContactFormSubmissionResponse,
   ContactFormDetails,
+  ContactForm,
 } from "./wordpress.d";
 
 const baseUrl = process.env.WORDPRESS_URL;
@@ -64,6 +65,63 @@ class WordPressAPIError extends Error {
 }
 
 const contactFormDetailsCache = new Map<string, ContactFormDetails>();
+const contactFormsCache = new Map<string, ContactForm>();
+let allContactFormsCached: ContactForm[] | null = null;
+
+async function fetchAllContactForms(): Promise<ContactForm[]> {
+  if (allContactFormsCached) {
+    return allContactFormsCached;
+  }
+
+  try {
+    const response = await fetch(
+      `${baseUrl}/wp-json/contact-form-7/v1/contact-forms`,
+      {
+        cache: "no-store",
+        headers: {
+          "User-Agent": "Next.js WordPress Client",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Failed to fetch Contact Form 7 forms:", response.statusText);
+      return [];
+    }
+
+    const data = await response.json();
+    // CF7 API returns { contact_forms: [...] }
+    const forms = (data.contact_forms || []) as ContactForm[];
+    allContactFormsCached = forms;
+
+    // Cache by slug for quick lookups
+    for (const form of forms) {
+      contactFormsCache.set(form.slug, form);
+    }
+
+    return forms;
+  } catch (error) {
+    console.error("Failed to fetch Contact Form 7 forms:", error);
+    return [];
+  }
+}
+
+/**
+ * Get a contact form by its slug. More stable than using IDs.
+ */
+export async function getContactFormBySlug(
+  slug: string
+): Promise<ContactForm | null> {
+  // Check cache first
+  if (contactFormsCache.has(slug)) {
+    return contactFormsCache.get(slug)!;
+  }
+
+  // Fetch all forms and cache them
+  await fetchAllContactForms();
+
+  return contactFormsCache.get(slug) || null;
+}
 
 async function getContactFormDetails(
   formId: string

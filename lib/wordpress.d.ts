@@ -70,16 +70,16 @@ export interface Post extends WPEntity {
   sticky: boolean;
   template: string;
   format:
-    | "standard"
-    | "aside"
-    | "chat"
-    | "gallery"
-    | "link"
-    | "image"
-    | "quote"
-    | "status"
-    | "video"
-    | "audio";
+  | "standard"
+  | "aside"
+  | "chat"
+  | "gallery"
+  | "link"
+  | "image"
+  | "quote"
+  | "status"
+  | "video"
+  | "audio";
   categories: number[];
   tags: number[];
   meta: Record<string, unknown>;
@@ -382,4 +382,11 @@ export interface ContactFormDetails {
   title: string;
   locale: string;
   version?: string;
+}
+
+export interface ContactForm {
+  id: number;
+  slug: string;
+  title: string;
+  locale: string;
 }

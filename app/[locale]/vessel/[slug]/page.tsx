@@ -668,7 +668,7 @@ export default async function Page({
             </div>
 
             {/* Contact Form */}
-            <div className="border rounded-lg p-6 bg-card">
+            <div id="contact" className="border rounded-lg p-6 bg-card">
               <h3 className="text-2xl font-semibold mb-4">
                 {t("vessels.detail.form.title")}
               </h3>
