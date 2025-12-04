@@ -1022,7 +1022,7 @@ export async function submitContactForm(
   formData.append("_wpcf7_container_post", "0");
   formData.append("_wpcf7_posted_data_hash", "");
 
-  formData.append("name", payload.name);
+  formData.append("fullname", payload.name);
   formData.append("email", payload.email);
   formData.append("message", payload.message);
 
@@ -1074,4 +1074,3 @@ export async function submitContactForm(
 }
 
 export { WordPressAPIError };
-export type { ContactFormSubmissionPayload, ContactFormSubmissionResponse, MenuItem };
