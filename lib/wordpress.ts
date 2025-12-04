@@ -1074,3 +1074,8 @@ export async function submitContactForm(
 }
 
 export { WordPressAPIError };
+export type {
+  MenuItem,
+  ContactFormSubmissionPayload,
+  ContactFormSubmissionResponse,
+};
