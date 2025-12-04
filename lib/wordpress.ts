@@ -136,7 +136,16 @@ async function wordpressFetch<T>(
     );
   }
 
-  return response.json();
+  const text = await response.text();
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    throw new WordPressAPIError(
+      `WordPress API returned invalid JSON. Response starts with: ${text.substring(0, 100)}`,
+      response.status,
+      url
+    );
+  }
 }
 
 // New function for paginated requests
@@ -168,7 +177,17 @@ async function wordpressFetchWithPagination<T>(
     );
   }
 
-  const data = await response.json();
+  const text = await response.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (error) {
+    throw new WordPressAPIError(
+      `WordPress API returned invalid JSON. Response starts with: ${text.substring(0, 100)}`,
+      response.status,
+      url
+    );
+  }
 
   return {
     data,
