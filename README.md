@@ -68,8 +68,11 @@ The following environment variables are required in your `.env.local` file:
 ```bash
 WORDPRESS_URL="https://wordpress.com"
 WORDPRESS_HOSTNAME="wordpress.com"
+WORDPRESS_CONTACT_FORM_ID="123"
 WORDPRESS_WEBHOOK_SECRET="your-secret-key-here"
 ```
+
+`WORDPRESS_CONTACT_FORM_ID` should match the Contact Form 7 instance that handles vessel inquiries so submissions can be relayed correctly.
 
 You can find the example of `.env.local` file in the `.env.example` file (and in Vercel).
 

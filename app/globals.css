@@ -179,6 +179,29 @@
   } */
 }
 
+
+.range-thumb {
+  @apply pointer-events-auto;
+}
+
+.range-thumb::-webkit-slider-thumb {
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 9999px;
+  background-color: hsl(var(--primary));
+  border: 2px solid hsl(var(--card));
+  box-shadow: 0 2px 4px hsla(212, 30%, 20%, 0.25);
+}
+
+.range-thumb::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 9999px;
+  background-color: hsl(var(--primary));
+  border: 2px solid hsl(var(--card));
+  box-shadow: 0 2px 4px hsla(212, 30%, 20%, 0.25);
+}
 @layer base {
   * {
     @apply border-border;

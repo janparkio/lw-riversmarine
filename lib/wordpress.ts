@@ -12,6 +12,8 @@ import type {
   Author,
   FeaturedMedia,
   Vessel,
+  ContactFormSubmissionPayload,
+  ContactFormSubmissionResponse,
 } from "./wordpress.d";
 
 const baseUrl = process.env.WORDPRESS_URL;
@@ -645,19 +647,37 @@ export async function getAllVessels(
   },
   locale: Locale = defaultLocale
 ): Promise<Vessel[]> {
-  const query: Record<string, any> = {
-    _embed: true,
-    per_page: 100,
-  };
+  const perPage = 100;
+  const allVessels: Vessel[] = [];
+  let page = 1;
+  let hasMore = true;
 
-  if (filterParams?.search) {
-    query.search = filterParams.search;
-  }
-  if (filterParams?.category) {
-    query.categories = filterParams.category;
+  while (hasMore) {
+    const query: Record<string, any> = {
+      _embed: true,
+      per_page: perPage,
+      page,
+    };
+
+    if (filterParams?.search) {
+      query.search = filterParams.search;
+    }
+    if (filterParams?.category) {
+      query.categories = filterParams.category;
+    }
+
+    const response = await wordpressFetchWithPagination<Vessel[]>(
+      "/wp-json/wp/v2/vessel",
+      query,
+      { locale }
+    );
+
+    allVessels.push(...response.data);
+    hasMore = page < response.headers.totalPages;
+    page++;
   }
 
-  return wordpressFetch<Vessel[]>("/wp-json/wp/v2/vessel", query, { locale });
+  return allVessels;
 }
 
 export async function getVesselById(
@@ -726,6 +746,49 @@ export async function getVesselsByCategoryPaginated(
     query,
     { locale }
   );
+}
+
+export async function submitContactForm(
+  formId: string,
+  payload: ContactFormSubmissionPayload
+): Promise<ContactFormSubmissionResponse> {
+  const url = `${baseUrl}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`;
+  const formData = new FormData();
+
+  formData.append("name", payload.name);
+  formData.append("email", payload.email);
+  formData.append("message", payload.message);
+
+  if (payload.phone) {
+    formData.append("tel", payload.phone);
+  }
+
+  if (payload.vesselTitle) {
+    formData.append("vessel_title", payload.vesselTitle);
+  }
+
+  if (payload.pageUrl) {
+    formData.append("page_url", payload.pageUrl);
+  }
+
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData,
+    headers: {
+      "User-Agent": "Next.js WordPress Client",
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new WordPressAPIError(
+      `WordPress API request failed: ${response.statusText}`,
+      response.status,
+      url
+    );
+  }
+
+  return response.json();
 }
 
 export { WordPressAPIError };

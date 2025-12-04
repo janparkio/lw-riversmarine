@@ -341,3 +341,26 @@ export interface FilterBarProps {
   onTagChange?: (tagId: Tag["id"] | undefined) => void;
   onCategoryChange?: (categoryId: Category["id"] | undefined) => void;
 }
+
+export interface ContactFormSubmissionPayload {
+  name: string;
+  email: string;
+  message: string;
+  phone?: string;
+  vesselTitle?: string;
+  pageUrl?: string;
+}
+
+export interface ContactFormInvalidField {
+  into: string;
+  message: string;
+  field: string;
+}
+
+export interface ContactFormSubmissionResponse {
+  into: string;
+  status: "mail_sent" | "validation_failed" | "spam" | string;
+  message: string;
+  posted_data_hash?: string;
+  invalid_fields?: ContactFormInvalidField[];
+}

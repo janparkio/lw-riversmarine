@@ -6,6 +6,12 @@ export const vesselTypeLabels: Record<VesselType, string> = {
   barge: "Barge",
 };
 
+export const bargeTypeLabels: Record<string, string> = {
+  dry: "Dry Cargo / Hopper",
+  deck: "Deck",
+  tank: "Tank",
+};
+
 export const classificationSocietyLabels: Record<string, string> = {
   abs: "ABS",
   dnv: "DNV",
@@ -41,6 +47,20 @@ export const cargoTankMaterialLabels: Record<string, string> = {
   steel: "Steel",
   stainless: "Stainless Steel",
   lined: "Lined",
+};
+
+export const fuelTypeLabels: Record<string, string> = {
+  diesel_mgo: "Diesel (MGO)",
+  diesel_mdo: "Diesel (MDO)",
+  diesel_ulsfo: "Diesel (ULSFO/VLSFO)",
+  biodiesel_blend: "Biodiesel blend",
+  hvo_renewable_diesel: "HVO/Renewable Diesel",
+  lng_dual_fuel: "LNG (dual-fuel)",
+  methanol_dual_fuel: "Methanol (dual-fuel)",
+  lpg_dual_fuel: "LPG (dual-fuel)",
+  hydrogen_fuel_cell: "Hydrogen (fuel-cell)",
+  hybrid_diesel_electric: "Hybrid Diesel–Electric",
+  battery_electric: "Battery-Electric",
 };
 
 export function getSelectLabel(

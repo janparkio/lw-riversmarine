@@ -1,80 +1,183 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
-interface ContactFormProps {
-  vesselTitle: string;
-  messages?: {
-    success: string;
-    submit: string;
-  };
+interface ContactFormCopy {
+  nameLabel: string;
+  emailLabel: string;
+  phoneLabel: string;
+  messageLabel: string;
+  namePlaceholder: string;
+  emailPlaceholder: string;
+  phonePlaceholder: string;
+  messagePlaceholder: string;
 }
 
-export function ContactForm({ vesselTitle, messages }: ContactFormProps) {
+interface ContactFormMessages {
+  success: string;
+  submit: string;
+  sending: string;
+  error: string;
+}
+
+interface ContactFormProps {
+  vesselTitle: string;
+  copy?: ContactFormCopy;
+  messages?: ContactFormMessages;
+}
+
+const defaultCopy: ContactFormCopy = {
+  nameLabel: "Name",
+  emailLabel: "Email",
+  phoneLabel: "Phone",
+  messageLabel: "Message",
+  namePlaceholder: "Your name",
+  emailPlaceholder: "your@email.com",
+  phonePlaceholder: "+1 (555) 123-4567",
+  messagePlaceholder: "I'm interested in this vessel...",
+};
+
+const defaultMessages: ContactFormMessages = {
+  success: "Thank you for your inquiry! We will contact you shortly.",
+  submit: "Send Inquiry",
+  sending: "Sending...",
+  error: "We couldn't send your request. Please try again.",
+};
+
+export function ContactForm({
+  vesselTitle,
+  copy,
+  messages,
+}: ContactFormProps) {
+  const mergedCopy = copy ? { ...defaultCopy, ...copy } : defaultCopy;
+  const mergedMessages = messages
+    ? { ...defaultMessages, ...messages }
+    : defaultMessages;
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+  const [currentUrl, setCurrentUrl] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrentUrl(window.location.href);
+    }
+  }, []);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Implement form submission logic
-    console.log("Form submitted:", { ...formData, vessel: vesselTitle });
-    alert(
-      messages?.success ||
-        "Thank you for your inquiry! We will contact you shortly."
-    );
+    setIsSubmitting(true);
+    setStatusMessage(null);
+
+    try {
+      const response = await fetch("/api/contact-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          vesselTitle,
+          pageUrl: currentUrl || undefined,
+        }),
+      });
+
+      const payload = await response.json();
+
+      if (!response.ok) {
+        console.error("Contact form submission error:", payload);
+        throw new Error(
+          payload?.message || mergedMessages.error
+        );
+      }
+
+      setStatusMessage({
+        type: "success",
+        text:
+          payload?.message || mergedMessages.success,
+      });
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+    } catch (error) {
+      const fallbackError = mergedMessages.error;
+      setStatusMessage({
+        type: "error",
+        text:
+          error instanceof Error
+            ? error.message || fallbackError
+            : fallbackError,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Name *</Label>
+        <Label htmlFor="name">
+          {mergedCopy.nameLabel} *
+        </Label>
         <Input
           id="name"
           type="text"
           required
-          placeholder="Your name"
+          placeholder={mergedCopy.namePlaceholder}
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email *</Label>
+        <Label htmlFor="email">
+          {mergedCopy.emailLabel} *
+        </Label>
         <Input
           id="email"
           type="email"
           required
-          placeholder="your@email.com"
+          placeholder={mergedCopy.emailPlaceholder}
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="phone">Phone</Label>
+        <Label htmlFor="phone">{mergedCopy.phoneLabel}</Label>
         <Input
           id="phone"
           type="tel"
-          placeholder="+1 (555) 123-4567"
+          placeholder={mergedCopy.phonePlaceholder}
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="message">Message *</Label>
+        <Label htmlFor="message">
+          {mergedCopy.messageLabel} *
+        </Label>
         <Textarea
           id="message"
           required
-          placeholder={`I'm interested in ${vesselTitle}...`}
+          placeholder={mergedCopy.messagePlaceholder || defaultCopy.messagePlaceholder}
           rows={4}
           value={formData.message}
           onChange={(e) =>
@@ -84,8 +187,16 @@ export function ContactForm({ vesselTitle, messages }: ContactFormProps) {
       </div>
 
       <Button type="submit" className="w-full" size="lg">
-        {messages?.submit || "Send Inquiry"}
+        {isSubmitting ? mergedMessages.sending : mergedMessages.submit}
       </Button>
+      {statusMessage && (
+        <p
+          role="status"
+          className={`text-sm ${statusMessage.type === "success" ? "text-green-600" : "text-red-600"}`}
+        >
+          {statusMessage.text}
+        </p>
+      )}
     </form>
   );
 }

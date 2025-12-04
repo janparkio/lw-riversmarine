@@ -36,9 +36,9 @@ const Hero = () => {
       <section>
         <div className="mx-auto">
           <div className="mx-auto lg:mx-0 text-pretty">
-            <Reveal as="span" className="inline-flex items-center rounded-full bg-accent/50 text-accent-foreground px-2 py-0.5 text-base font-medium ring-1 ring-accent-foreground/10">
+            {/* <Reveal as="span" className="inline-flex items-center rounded-full bg-accent/50 text-accent-foreground px-2 py-0.5 text-base font-medium ring-1 ring-accent-foreground/10">
               Coming soon
-            </Reveal>
+            </Reveal> */}
             <Reveal as="h2" className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
               Towboat & Barge Brokerage You Can Rely On
             </Reveal>

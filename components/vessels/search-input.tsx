@@ -18,12 +18,14 @@ export function SearchInput({
 
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
+    params.delete("page");
     if (term) {
       params.set("search", term);
     } else {
       params.delete("search");
     }
-    replace(`${pathname}?${params.toString()}`);
+    const query = params.toString();
+    replace(`${pathname}${query ? `?${query}` : ""}`);
   }, 300);
 
   return (

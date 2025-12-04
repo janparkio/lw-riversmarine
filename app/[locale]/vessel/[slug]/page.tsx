@@ -4,6 +4,7 @@ import {
   getFeaturedMediaById,
   getCategoryById,
   getAllVesselSlugs,
+  getAllVessels,
 } from "@/lib/wordpress";
 
 import { Section, Container, Article, Prose } from "@/components/craft";
@@ -30,10 +31,13 @@ import Balancer from "react-wrap-balancer";
 
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import type { VesselType } from "@/lib/wordpress.d";
+import type { Vessel, VesselType } from "@/lib/wordpress.d";
 import { LanguageAlternatesScript } from "@/components/language/language-alternates-script";
 import { TranslationFallback } from "@/components/language/translation-fallback";
-import { resolvePolylangResource } from "@/lib/polylang";
+import {
+  partitionEntitiesByLocale,
+  resolvePolylangResource,
+} from "@/lib/polylang";
 import {
   cargoTankMaterialLabels,
   classificationSocietyLabels,
@@ -43,7 +47,9 @@ import {
   pumpLabels,
   vaporRecoveryLabels,
   vesselTypeLabels,
+  fuelTypeLabels,
 } from "@/lib/vessel";
+import { ArrowLeft } from "lucide-react";
 
 export async function generateStaticParams() {
   const params = await Promise.all(
@@ -124,21 +130,6 @@ export async function generateMetadata({
   };
 }
 
-// Fuel type labels mapping
-const fuelTypeLabels: Record<string, string> = {
-  diesel_mgo: "Diesel (MGO)",
-  diesel_mdo: "Diesel (MDO)",
-  diesel_ulsfo: "Diesel (ULSFO/VLSFO)",
-  biodiesel_blend: "Biodiesel blend",
-  hvo_renewable_diesel: "HVO/Renewable Diesel",
-  lng_dual_fuel: "LNG (dual-fuel)",
-  methanol_dual_fuel: "Methanol (dual-fuel)",
-  lpg_dual_fuel: "LPG (dual-fuel)",
-  hydrogen_fuel_cell: "Hydrogen (fuel-cell)",
-  hybrid_diesel_electric: "Hybrid Diesel–Electric",
-  battery_electric: "Battery-Electric",
-};
-
 export default async function Page({
   params,
 }: {
@@ -173,6 +164,7 @@ export default async function Page({
   const noLabel = t("common.no");
   const showMoreLabel = t("common.showMore");
   const showLessLabel = t("common.showLess");
+  const navCatalogPromise = getAllVessels(undefined, locale);
 
   // Fetch gallery images
   const galleryImages = vessel.acf.gallery
@@ -408,6 +400,44 @@ export default async function Page({
   const tableRows = specRows.filter(
     (row) => !row.variant || row.variant === "table"
   );
+  const navCatalog = await navCatalogPromise;
+  const { matches: localizedCatalog } = partitionEntitiesByLocale(
+    navCatalog,
+    locale
+  );
+  const sortedCatalog = [...localizedCatalog].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+  let adjacentVessels: { type: "previous" | "next"; vessel: Vessel }[] = [];
+
+  if (sortedCatalog.length > 1) {
+    const currentIndex = sortedCatalog.findIndex(
+      (item) => item.id === vessel.id
+    );
+
+    if (currentIndex !== -1) {
+      if (currentIndex > 0) {
+        adjacentVessels.push({
+          type: "previous",
+          vessel: sortedCatalog[currentIndex - 1],
+        });
+      }
+      if (currentIndex < sortedCatalog.length - 1) {
+        adjacentVessels.push({
+          type: "next",
+          vessel: sortedCatalog[currentIndex + 1],
+        });
+      }
+    } else {
+      adjacentVessels = sortedCatalog
+        .filter((item) => item.id !== vessel.id)
+        .slice(0, 2)
+        .map((item, index) => ({
+          type: index === 0 ? "previous" : "next",
+          vessel: item,
+        }));
+    }
+  }
 
   return (
     <>
@@ -421,6 +451,15 @@ export default async function Page({
               className="mb-6"
             />
           )}
+          <div className="mb-4">
+            <Link
+              href={withLocalePath(locale, "/vessel")}
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              {t("vessels.detail.backToListings")}
+            </Link>
+          </div>
           <Prose>
             <h1>
               <Balancer>
@@ -638,13 +677,121 @@ export default async function Page({
               </p>
               <ContactForm
                 vesselTitle={vessel.title.rendered}
+                copy={{
+                  nameLabel: t("vessels.detail.form.fields.name"),
+                  emailLabel: t("vessels.detail.form.fields.email"),
+                  phoneLabel: t("vessels.detail.form.fields.phone"),
+                  messageLabel: t("vessels.detail.form.fields.message"),
+                  namePlaceholder: t("vessels.detail.form.placeholders.name"),
+                  emailPlaceholder: t("vessels.detail.form.placeholders.email"),
+                  phonePlaceholder: t("vessels.detail.form.placeholders.phone"),
+                  messagePlaceholder: t(
+                    "vessels.detail.form.placeholders.message",
+                    { vesselTitle: vessel.title.rendered }
+                  ),
+                }}
                 messages={{
                   success: t("vessels.detail.form.success"),
                   submit: t("vessels.detail.form.submit"),
+                  sending: t("vessels.detail.form.sending"),
+                  error: t("vessels.detail.form.error"),
                 }}
               />
             </div>
           </div>
+
+          {adjacentVessels.length > 0 && (
+            <div className="my-12 space-y-4">
+              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h3 className="text-2xl font-semibold">
+                    {t("vessels.detail.moreHeading")}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {t("vessels.detail.moreDescription")}
+                  </p>
+                </div>
+                <Button variant="outline" asChild>
+                  <Link href={withLocalePath(locale, "/vessel")}>
+                    {t("vessels.detail.moreCta")}
+                  </Link>
+                </Button>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                {adjacentVessels.map(({ type, vessel: adjacent }) => {
+                  const adjacentCore = adjacent.acf?.specs?.core_specs ?? {};
+                  const adjacentPropulsion =
+                    adjacent.acf?.specs?.propulsion_power_specs ?? {};
+                  const adjacentDims = adjacentCore.dimensions ?? {};
+                  const adjacentMeta: string[] = [];
+
+                  if (adjacentCore.year_built) {
+                    adjacentMeta.push(adjacentCore.year_built.toString());
+                  }
+
+                  if (adjacentPropulsion.total_horse_power) {
+                    adjacentMeta.push(
+                      t("vessels.detail.meta.hp", {
+                        hp: formatNumber(
+                          adjacentPropulsion.total_horse_power,
+                          locale
+                        ),
+                      })
+                    );
+                  }
+
+                  if (adjacentDims.length) {
+                    adjacentMeta.push(
+                      `${adjacentDims.length} ${
+                        adjacentCore.length_unit || "ft"
+                      }`
+                    );
+                  }
+
+                  return (
+                    <div
+                      key={adjacent.id}
+                      className="rounded-lg border bg-card/40 p-5 shadow-sm flex flex-col gap-3"
+                    >
+                      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        {type === "previous"
+                          ? t("vessels.detail.previousVessel")
+                          : t("vessels.detail.nextVessel")}
+                      </span>
+                      <Link
+                        href={withLocalePath(
+                          locale,
+                          `/vessel/${adjacent.slug}`
+                        )}
+                        className="text-lg font-semibold hover:underline"
+                        dangerouslySetInnerHTML={{
+                          __html: adjacent.title.rendered,
+                        }}
+                      />
+                      {adjacentMeta.length > 0 && (
+                        <p className="text-sm text-muted-foreground">
+                          {adjacentMeta.join(" • ")}
+                        </p>
+                      )}
+                      <div>
+                        <Button size="sm" variant="ghost" asChild>
+                          <Link
+                            href={withLocalePath(
+                              locale,
+                              `/vessel/${adjacent.slug}`
+                            )}
+                          >
+                            {t("vessels.detail.viewVessel")}
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </Container>
       </UnitProvider>
     </>
