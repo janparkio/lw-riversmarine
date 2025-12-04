@@ -799,11 +799,11 @@ type MenuApiItem = {
   menu_item_parent?: number | string | null;
   menu_order?: number | string | null;
   title?:
-    | string
-    | null
-    | {
-        rendered?: string | null;
-      };
+  | string
+  | null
+  | {
+    rendered?: string | null;
+  };
   name?: string | null;
   url?: string | null;
   target?: string | null;
@@ -1057,7 +1057,7 @@ export async function submitContactForm(
   if (!response.ok) {
     const error = new WordPressAPIError(
       (data as ContactFormSubmissionResponse | undefined)?.message ||
-        `WordPress API request failed: ${response.statusText}`,
+      `WordPress API request failed: ${response.statusText}`,
       response.status,
       url
     );
@@ -1074,3 +1074,4 @@ export async function submitContactForm(
 }
 
 export { WordPressAPIError };
+export type { ContactFormSubmissionPayload, ContactFormSubmissionResponse, MenuItem };
